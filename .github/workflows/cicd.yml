@@ -10,8 +10,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       
-    - name: Docker login      
-      run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_TOKEN }}
+    - name: Docker Login      
+      run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_TOKEN }} || echo could not login
       
     - name: pull latest (for cache)
       run: docker pull setecrs/samba-ad-member || echo could not pull  
