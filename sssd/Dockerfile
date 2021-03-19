@@ -47,10 +47,7 @@ RUN apt-get -y update && \
 # --------------------------------------------------
 # 'Enabling sssd and Disabling Samba to enable handling by supervisord'
 # --------------------------------------------------
-RUN systemctl enable sssd \
- && systemctl disable winbind \
- && systemctl disable nmbd \
- && systemctl disable smbd
+RUN systemctl enable sssd
 
 RUN mkdir -p /var/lib/samba/private
 
