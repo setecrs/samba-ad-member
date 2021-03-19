@@ -310,4 +310,14 @@ echo --------------------------------------------------
 timeout 30s /etc/init.d/sssd restart
 timeout 30s /etc/init.d/sssd status
 
+
+echo --------------------------------------------------
+echo 'Stopping Samba to enable handling by supervisord'
+echo --------------------------------------------------
+/etc/init.d/winbind stop
+/etc/init.d/nmbd stop
+/etc/init.d/smbd stop
+
+
+
 exec "$@"
