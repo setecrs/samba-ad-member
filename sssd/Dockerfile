@@ -35,11 +35,18 @@ RUN apt-get -y update && \
         libnss-sss \
         libpam-sss \
         adcli \
-        supervisor
+        supervisor \
+   && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN systemctl enable sssd
+
+# --------------------------------------------------
+# 'Enabling sssd and Disabling Samba to enable handling by supervisord'
+# --------------------------------------------------
+RUN systemctl enable sssd \
+ && systemctl disable winbind \
+ && systemctl disable nmbd \
+ && systemctl disable smbd
 
 RUN mkdir -p /var/lib/samba/private
 
