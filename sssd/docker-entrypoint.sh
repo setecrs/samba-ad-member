@@ -3,6 +3,8 @@
 # * https://wiki.debian.org/AuthenticatingLinuxWithActiveDirectory
 # * https://wiki.samba.org/index.php/Troubleshooting_Samba_Domain_Members
 # * http://www.oreilly.com/openbook/samba/book/ch04_08.html
+#
+# https://wiki.samba.org/index.php/Setting_up_Samba_as_a_Domain_Member
 
 # GUEST_USERNAME=${GUEST_USERNAME:-ftp}
 # GUEST_PASSWORD=${GUEST_PASSWORD:-V3ry1nS3cur3P4ss0rd}
@@ -35,8 +37,10 @@ WINBIND_ENUM_USERS=${WINBIND_ENUM_USERS:-yes}
 WINBIND_ENUM_GROUPS=${WINBIND_ENUM_GROUPS:-yes}
 TEMPLATE_HOMEDIR=${TEMPLATE_HOMEDIR:-/home/%D/%U}
 TEMPLATE_SHELL=${TEMPLATE_SHELL:-/bin/bash}
+# now kerberos is run by samba
 DEDICATED_KEYTAB_FILE=${DEDICATED_KEYTAB_FILE:-/etc/samba/krb5.keytab}
 KERBEROS_METHOD=${KERBEROS_METHOD:-secrets and keytab}
+#
 CLIENT_USE_SPNEGO=${CLIENT_USE_SPNEGO:-yes}
 CLIENT_NTLMV2_AUTH=${CLIENT_NTLMV2_AUTH:-yes}
 ENCRYPT_PASSWORDS=${ENCRYPT_PASSWORDS:-yes}
@@ -102,55 +106,35 @@ cat > /etc/krb5.conf << EOL
     dns_lookup_realm = false
     dns_lookup_kdc = false
 
-[realms]
-    ${DOMAIN_NAME^^} = {
-        kdc = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
-        admin_server = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
-        default_domain = ${DOMAIN_NAME^^}       
-    }
-    ${DOMAIN_NAME,,} = {
-        kdc = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
-        admin_server = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
-        default_domain = ${DOMAIN_NAME,,}
-    }
-    ${WORKGROUP^^} = {
-        kdc = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
-        admin_server = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
-        default_domain = ${DOMAIN_NAME^^}       
-    }
-    
-[domain_realm]
-    .${DOMAIN_NAME,,} = ${DOMAIN_NAME^^}
-    ${DOMAIN_NAME,,} = ${DOMAIN_NAME^^}
 EOL
 
-echo --------------------------------------------------
-echo "Setting up guest user credential: \"$GUEST_USERNAME\""
-echo --------------------------------------------------
-if [[ ! `grep $GUEST_USERNAME /etc/passwd` ]]; then
-    useradd $GUEST_USERNAME
-fi
-#echo $GUEST_PASSWORD | tee - | smbpasswd -a -s $GUEST_USERNAME
-smbpasswd -a -s $GUEST_USERNAME -w $GUEST_PASSWORD
+#echo --------------------------------------------------
+#echo "Setting up guest user credential: \"$GUEST_USERNAME\""
+#echo --------------------------------------------------
+#if [[ ! `grep $GUEST_USERNAME /etc/passwd` ]]; then
+#    useradd $GUEST_USERNAME
+#fi
+##echo $GUEST_PASSWORD | tee - | smbpasswd -a -s $GUEST_USERNAME
+#smbpasswd -a -s $GUEST_USERNAME -w $GUEST_PASSWORD
 
 echo --------------------------------------------------
 echo " Starting system message bus"
 echo --------------------------------------------------
 /etc/init.d/dbus start
 
-echo --------------------------------------------------
-echo "Discovering domain specifications"
-echo --------------------------------------------------
-# realm discover -v ${DOMAIN_NAME,,}
-realm discover -v $(echo $ADMIN_SERVER | awk '{print $1}')
+#echo --------------------------------------------------
+#echo "Discovering domain specifications"
+#echo --------------------------------------------------
+## realm discover -v ${DOMAIN_NAME,,}
+#realm discover -v $(echo $ADMIN_SERVER | awk '{print $1}')
 
-echo --------------------------------------------------
-echo "Joining domain: \"${DOMAIN_NAME,,}\""
-echo --------------------------------------------------
-#echo $AD_PASSWORD | /usr/sbin/adcli join --verbose --domain ${DOMAIN_NAME,,} --domain-realm ${DOMAIN_NAME^^} --domain-controller $(echo ${ADMIN_SERVER,,} | awk '{print $1}') --login-type user --login-user $AD_USERNAME --stdin-password
-#echo $AD_PASSWORD | realm join -v ${DOMAIN_NAME,,} --user=$AD_USERNAME
-printf $AD_PASSWORD | realm join -v $(echo ${ADMIN_SERVER,,} | awk '{print $1}') --user=$AD_USERNAME
-#echo $AD_PASSWORD | realm join --user="${DOMAIN_NAME^^}\\$AD_USERNAME" $(echo $ADMIN_SERVER | awk '{print $1}')
+#echo --------------------------------------------------
+#echo "Joining domain: \"${DOMAIN_NAME,,}\""
+#echo --------------------------------------------------
+##echo $AD_PASSWORD | /usr/sbin/adcli join --verbose --domain ${DOMAIN_NAME,,} --domain-realm ${DOMAIN_NAME^^} --domain-controller $(echo ${ADMIN_SERVER,,} | awk '{print $1}') --login-type user --login-user $AD_USERNAME --stdin-password
+##echo $AD_PASSWORD | realm join -v ${DOMAIN_NAME,,} --user=$AD_USERNAME
+#printf $AD_PASSWORD | realm join -v $(echo ${ADMIN_SERVER,,} | awk '{print $1}') --user=$AD_USERNAME
+##echo $AD_PASSWORD | realm join --user="${DOMAIN_NAME^^}\\$AD_USERNAME" $(echo $ADMIN_SERVER | awk '{print $1}')
 
 # Restrict Domain controllers to join as per ADMIN_SERVER environment variable
 crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "ad_server" "$(echo ${ADMIN_SERVER} | sed 's#\s#,#g')"
@@ -316,10 +300,10 @@ pam-auth-update
 #echo --------------------------------------------------
 #echo $AD_PASSWORD | kinit -V $AD_USERNAME@$REALM
 
-echo --------------------------------------------------
-echo 'Registering to Active Directory'
-echo --------------------------------------------------
-net ads join -U"$AD_USERNAME"%"$AD_PASSWORD"
+#echo --------------------------------------------------
+#echo 'Registering to Active Directory'
+#echo --------------------------------------------------
+#####net ads join -U"$AD_USERNAME"%"$AD_PASSWORD"
 #wbinfo --online-status
 
 
