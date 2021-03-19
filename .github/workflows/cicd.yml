@@ -11,9 +11,7 @@ jobs:
     - uses: actions/checkout@v2
       
     - name: Docker login      
-      env: 
-        USUARIO: ${{ secrets.DOCKER_USERNAME }}
-      run: echo $USUARIO && docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_TOKEN }}
+      run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_TOKEN }}
       
     - name: pull latest (for cache)
       run: docker pull setecrs/samba-ad-member || echo could not pull  
