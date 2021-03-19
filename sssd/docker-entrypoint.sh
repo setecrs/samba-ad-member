@@ -4,10 +4,10 @@
 # * https://wiki.samba.org/index.php/Troubleshooting_Samba_Domain_Members
 # * http://www.oreilly.com/openbook/samba/book/ch04_08.html
 
-GUEST_USERNAME=${GUEST_USERNAME:-ftp}
-GUEST_PASSWORD=${GUEST_PASSWORD:-V3ry1nS3cur3P4ss0rd}
+# GUEST_USERNAME=${GUEST_USERNAME:-ftp}
+# GUEST_PASSWORD=${GUEST_PASSWORD:-V3ry1nS3cur3P4ss0rd}
 
-TZ=${TZ:-Etc/UTC}
+
 # Update loopback entry
 TZ=${TZ:-Etc/UTC}
 AD_USERNAME=${AD_USERNAME:-administrator}
@@ -35,6 +35,8 @@ WINBIND_ENUM_USERS=${WINBIND_ENUM_USERS:-yes}
 WINBIND_ENUM_GROUPS=${WINBIND_ENUM_GROUPS:-yes}
 TEMPLATE_HOMEDIR=${TEMPLATE_HOMEDIR:-/home/%D/%U}
 TEMPLATE_SHELL=${TEMPLATE_SHELL:-/bin/bash}
+DEDICATED_KEYTAB_FILE=${DEDICATED_KEYTAB_FILE:-/etc/samba/krb5.keytab}
+KERBEROS_METHOD=${KERBEROS_METHOD:-secrets and keytab}
 CLIENT_USE_SPNEGO=${CLIENT_USE_SPNEGO:-yes}
 CLIENT_NTLMV2_AUTH=${CLIENT_NTLMV2_AUTH:-yes}
 ENCRYPT_PASSWORDS=${ENCRYPT_PASSWORDS:-yes}
@@ -251,6 +253,11 @@ crudini --set $SAMBA_CONF global "winbind nested groups" "no"
 crudini --set $SAMBA_CONF global "winbind refresh tickets" "yes"
 crudini --set $SAMBA_CONF global "winbind offline logon" "true"
 
+# Kerberos
+crudini --set $SAMBA_CONF global "dedicated keytab file" "$DEDICATED_KEYTAB_FILE"
+crudini --set $SAMBA_CONF global "kerberos method" "$KERBEROS_METHOD"
+
+
 # home shared directory (restricted to owner)
 crudini --set $SAMBA_CONF home "comment" "Home Directories"
 crudini --set $SAMBA_CONF home "path" "/home/"
@@ -304,10 +311,10 @@ fi
 
 pam-auth-update
 
-echo --------------------------------------------------
-echo 'Generating Kerberos ticket'
-echo --------------------------------------------------
-echo $AD_PASSWORD | kinit -V $AD_USERNAME@$REALM
+#echo --------------------------------------------------
+#echo 'Generating Kerberos ticket'
+#echo --------------------------------------------------
+#echo $AD_PASSWORD | kinit -V $AD_USERNAME@$REALM
 
 echo --------------------------------------------------
 echo 'Registering to Active Directory'
@@ -315,14 +322,9 @@ echo --------------------------------------------------
 net ads join -U"$AD_USERNAME"%"$AD_PASSWORD"
 #wbinfo --online-status
 
-echo --------------------------------------------------
-echo 'Stopping Samba to enable handling by supervisord'
-echo --------------------------------------------------
-/etc/init.d/winbind stop
-/etc/init.d/nmbd stop
-/etc/init.d/smbd stop
 
-echo --------------------------------------------------
-echo 'Restarting Samba using supervisord'
-echo --------------------------------------------------
+
+#echo --------------------------------------------------
+#echo 'Restarting Samba using supervisord'
+#echo --------------------------------------------------
 exec "$@"
