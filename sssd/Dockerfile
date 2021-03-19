@@ -11,15 +11,16 @@ ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 #        dnsutils \
 #        vim \
 #        nano \
-#        realmd \
-#        krb5-user \
-#        libpam-krb5 \
+
 
         
 RUN apt-get -y update && \
     apt-get -yqq --no-install-recommends install \
         crudini \
         dbus \
+        realmd \
+        krb5-user \
+        libpam-krb5 \
         adcli \
         winbind \
         libnss-winbind \
