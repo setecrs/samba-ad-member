@@ -273,7 +273,7 @@ crudini --set $SAMBA_CONF private "guest ok" "no"
 crudini --set $SAMBA_CONF private "read only" "yes"
 crudini --set $SAMBA_CONF private "writeable" "no"
 crudini --set $SAMBA_CONF private "create mask" "0774"
-crudini --set $SAMBA_CONF private "directory mask" "0774"
+crudini --set $SAMBA_CONF private "directory mask" "0050"
 crudini --set $SAMBA_CONF private "browseable" "yes"
 crudini --set $SAMBA_CONF private "printable" "no"
 crudini --set $SAMBA_CONF private "oplocks" "yes"
@@ -297,7 +297,10 @@ pam-auth-update
 echo --------------------------------------------------
 echo 'Registering to Active Directory'
 echo --------------------------------------------------
-net ads join -U"$AD_USERNAME"%"$AD_PASSWORD"
+if [[ ! -f /etc/samba/krb5.keytab ]]; then
+        net ads join -U"$AD_USERNAME"%"$AD_PASSWORD"	
+fi
+
 # wbinfo --online-status
 
 # Restrict Domain controllers to join as per ADMIN_SERVER environment variable
