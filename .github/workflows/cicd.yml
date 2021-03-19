@@ -18,7 +18,7 @@ jobs:
       
     - name: Docker build latest
       working-directory: sssd
-      run: cd sssd && docker build --cache-from setecrs/samba-ad-member:latest . -t setecrs/samba-ad-member:latest
+      run: docker build --cache-from setecrs/samba-ad-member:latest . -t setecrs/samba-ad-member:latest
       
     - name: Docker push latest (if master)
       if: github.ref == 'refs/heads/master'
