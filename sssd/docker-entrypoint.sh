@@ -137,15 +137,7 @@ echo --------------------------------------------------
 #printf $AD_PASSWORD | realm join -v $(echo ${ADMIN_SERVER,,} | awk '{print $1}') --user=$AD_USERNAME
 ##echo $AD_PASSWORD | realm join --user="${DOMAIN_NAME^^}\\$AD_USERNAME" $(echo $ADMIN_SERVER | awk '{print $1}')
 
-# Restrict Domain controllers to join as per ADMIN_SERVER environment variable
-crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "ad_server" "$(echo ${ADMIN_SERVER} | sed 's#\s#,#g')"
-cat /etc/sssd/sssd.conf
 
-echo --------------------------------------------------
-echo "Starting: \"sssd\""
-echo --------------------------------------------------
-timeout 30s /etc/init.d/sssd restart
-timeout 30s /etc/init.d/sssd status
 
 echo --------------------------------------------------
 echo "Activating home directory auto-creation"
@@ -302,15 +294,20 @@ pam-auth-update
 #echo --------------------------------------------------
 #echo $AD_PASSWORD | kinit -V $AD_USERNAME@$REALM
 
-#echo --------------------------------------------------
-#echo 'Registering to Active Directory'
-#echo --------------------------------------------------
-#####net ads join -U"$AD_USERNAME"%"$AD_PASSWORD"
-#wbinfo --online-status
+echo --------------------------------------------------
+echo 'Registering to Active Directory'
+echo --------------------------------------------------
+net ads join -U"$AD_USERNAME"%"$AD_PASSWORD"
+# wbinfo --online-status
 
+# Restrict Domain controllers to join as per ADMIN_SERVER environment variable
+crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "ad_server" "$(echo ${ADMIN_SERVER} | sed 's#\s#,#g')"
+# cat /etc/sssd/sssd.conf
 
+echo --------------------------------------------------
+echo "Starting: \"sssd\""
+echo --------------------------------------------------
+timeout 30s /etc/init.d/sssd restart
+timeout 30s /etc/init.d/sssd status
 
-#echo --------------------------------------------------
-#echo 'Restarting Samba using supervisord'
-#echo --------------------------------------------------
 exec "$@"
