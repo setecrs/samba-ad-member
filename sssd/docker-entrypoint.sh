@@ -91,9 +91,9 @@ dpkg-reconfigure --frontend noninteractive tzdata
 echo --------------------------------------------------
 echo "Setting up Kerberos realm: \"${DOMAIN_NAME^^}\""
 echo --------------------------------------------------
-if [[ ! -f /etc/krb5.conf.original ]]; then
-	mv /etc/krb5.conf /etc/krb5.conf.original
-fi
+#if [[ ! -f /etc/krb5.conf.original ]]; then
+#	mv /etc/krb5.conf /etc/krb5.conf.original
+#fi
 
 cat > /etc/krb5.conf << EOL
 [logging]
