@@ -1,0 +1,31 @@
+
+name: CI/CD
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/master'
+    steps:
+    - uses: actions/checkout@v2
+      
+    - name: Docker login
+      run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_TOKEN }}
+      
+    - name: pull latest (for cache)
+      run: docker pull setecrs/samba-ad-member || echo could not pull  
+      
+    - name: Docker build latest
+      run: cd sssd && docker build --cache-from setecrs/samba-ad-member:latest . -t setecrs/samba-ad-member:latest
+      
+    - name: Docker push latest (if master)
+      if: github.ref == 'refs/heads/master'
+      run: docker push setecrs/samba-ad-member:latest   
+      
+    - name: Docker push - semver
+      if: startsWith(github.ref, 'refs/tags/')
+      run: |
+        docker tag setecrs/samba-ad-member:latest setecrs/samba-ad-member:${GITHUB_REF#refs/tags/}         
+        docker push setecrs/samba-ad-member:${GITHUB_REF#refs/tags/}
+        
