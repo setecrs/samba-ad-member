@@ -71,6 +71,7 @@ LEVEL2_OPLOCKS=${LEVEL2_OPLOCKS:-no}
 KERNEL_OPLOCKS=${KERNEL_OPLOCKS:-yes}
 MAX_XMIT=${MAX_XMIT:-65535}
 DEAD_TIME=${DEAD_TIME:-15}
+SHARED_DIRECTORY=${SHARED_DIRECTORY:-/usr/share/public}
 
 SAMBA_CONF=/etc/samba/smb.conf
 
@@ -158,8 +159,9 @@ echo --------------------------------------------------
 crudini --set $SAMBA_CONF global "vfs objects" "acl_xattr"
 crudini --set $SAMBA_CONF global "map acl inherit" "yes"
 crudini --set $SAMBA_CONF global "store dos attributes" "yes"
-crudini --set $SAMBA_CONF global "guest account" "$GUEST_USERNAME"
+# crudini --set $SAMBA_CONF global "guest account" "$GUEST_USERNAME"
 
+crudini --set $SAMBA_CONF global "netbios name" "$HOSTNAME"
 crudini --set $SAMBA_CONF global "workgroup" "$WORKGROUP"
 crudini --set $SAMBA_CONF global "server string" "$SERVER_STRING"
 
@@ -242,42 +244,42 @@ crudini --set $SAMBA_CONF global "dedicated keytab file" "$DEDICATED_KEYTAB_FILE
 crudini --set $SAMBA_CONF global "kerberos method" "$KERBEROS_METHOD"
 
 
-# home shared directory (restricted to owner)
-crudini --set $SAMBA_CONF home "comment" "Home Directories"
-crudini --set $SAMBA_CONF home "path" "/home/"
-crudini --set $SAMBA_CONF home "public" "yes"
-crudini --set $SAMBA_CONF home "guest ok" "no"
-crudini --set $SAMBA_CONF home "read only" "no"
-crudini --set $SAMBA_CONF home "writeable" "yes"
-crudini --set $SAMBA_CONF home "create mask" "0777"
-crudini --set $SAMBA_CONF home "directory mask" "0777"
-crudini --set $SAMBA_CONF home "browseable" "yes"
-crudini --set $SAMBA_CONF home "printable" "no"
-crudini --set $SAMBA_CONF home "oplocks" "yes"
+# # home shared directory (restricted to owner)
+# crudini --set $SAMBA_CONF home "comment" "Home Directories"
+# crudini --set $SAMBA_CONF home "path" "/home/"
+# crudini --set $SAMBA_CONF home "public" "yes"
+# crudini --set $SAMBA_CONF home "guest ok" "no"
+# crudini --set $SAMBA_CONF home "read only" "no"
+# crudini --set $SAMBA_CONF home "writeable" "yes"
+# crudini --set $SAMBA_CONF home "create mask" "0777"
+# crudini --set $SAMBA_CONF home "directory mask" "0777"
+# crudini --set $SAMBA_CONF home "browseable" "yes"
+# crudini --set $SAMBA_CONF home "printable" "no"
+# crudini --set $SAMBA_CONF home "oplocks" "yes"
 #crudini --set $SAMBA_CONF home "valid users" "%S"
 
-# public shared directory (unrestricted)
-mkdir -p "/usr/share/public"
-crudini --set $SAMBA_CONF public "comment" "Public Directories"
-crudini --set $SAMBA_CONF public "path" "/usr/share/public/"
-crudini --set $SAMBA_CONF public "public" "yes"
-crudini --set $SAMBA_CONF public "guest ok" "no"
-crudini --set $SAMBA_CONF public "read only" "no"
-crudini --set $SAMBA_CONF public "writeable" "yes"
-crudini --set $SAMBA_CONF public "create mask" "0774"
-crudini --set $SAMBA_CONF public "directory mask" "0774"
-crudini --set $SAMBA_CONF public "browseable" "yes"
-crudini --set $SAMBA_CONF public "printable" "no"
-crudini --set $SAMBA_CONF public "oplocks" "yes"
+# # public shared directory (unrestricted)
+# mkdir -p "/usr/share/public"
+# crudini --set $SAMBA_CONF public "comment" "Public Directories"
+# crudini --set $SAMBA_CONF public "path" "/usr/share/public/"
+# crudini --set $SAMBA_CONF public "public" "yes"
+# crudini --set $SAMBA_CONF public "guest ok" "no"
+# crudini --set $SAMBA_CONF public "read only" "no"
+# crudini --set $SAMBA_CONF public "writeable" "yes"
+# crudini --set $SAMBA_CONF public "create mask" "0774"
+# crudini --set $SAMBA_CONF public "directory mask" "0774"
+# crudini --set $SAMBA_CONF public "browseable" "yes"
+# crudini --set $SAMBA_CONF public "printable" "no"
+# crudini --set $SAMBA_CONF public "oplocks" "yes"
 
 # private shared directory (restricted)
-mkdir -p "/usr/share/private"
-crudini --set $SAMBA_CONF private "comment" "Private Directories"
-crudini --set $SAMBA_CONF private "path" "/usr/share/private/"
+mkdir -p "$SHARED_DIRECTORY"
+crudini --set $SAMBA_CONF private "comment" "Shared Directory"
+crudini --set $SAMBA_CONF private "path" "$SHARED_DIRECTORY"
 crudini --set $SAMBA_CONF private "public" "yes"
 crudini --set $SAMBA_CONF private "guest ok" "no"
-crudini --set $SAMBA_CONF private "read only" "no"
-crudini --set $SAMBA_CONF private "writeable" "yes"
+crudini --set $SAMBA_CONF private "read only" "yes"
+crudini --set $SAMBA_CONF private "writeable" "no"
 crudini --set $SAMBA_CONF private "create mask" "0774"
 crudini --set $SAMBA_CONF private "directory mask" "0774"
 crudini --set $SAMBA_CONF private "browseable" "yes"
