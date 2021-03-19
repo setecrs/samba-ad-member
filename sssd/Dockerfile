@@ -2,7 +2,7 @@ FROM debian:stable
 
 MAINTAINER Aristeu Jr <aristeu.jr@gmail.com>
 
-ENV TZ=Brazil/East
+ENV TZ=America/Sao_Paulo
 ENV DEBIAN_FRONTEND=noninteractive
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 
