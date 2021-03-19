@@ -6,12 +6,14 @@ ENV TZ=Brazil/East
 ENV DEBIAN_FRONTEND=noninteractive
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 
+
+#        resolvconf \
+#        dnsutils \
+#        vim \
+#        nano \
+        
 RUN apt-get -y update && \
     apt-get -yqq --no-install-recommends install \
-        resolvconf \
-        dnsutils \
-        vim \
-        nano \
         crudini \
         dbus \
         realmd \
