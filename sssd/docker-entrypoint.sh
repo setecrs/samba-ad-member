@@ -75,13 +75,7 @@ SHARED_DIRECTORY=${SHARED_DIRECTORY:-/usr/share/public}
 
 SAMBA_CONF=/etc/samba/smb.conf
 
-echo --------------------------------------------------
-echo "Backing up current smb.conf"
-echo --------------------------------------------------
-if [[ ! -f /etc/samba/smb.conf.original ]]; then
-	mv -v /etc/samba/smb.conf /etc/samba/smb.conf.original
-	touch $SAMBA_CONF
-fi
+
 
 echo --------------------------------------------------
 echo "Setting Timezone configuration"
@@ -143,6 +137,21 @@ echo --------------------------------------------------
 echo "Activating home directory auto-creation"
 echo --------------------------------------------------
 echo "session required pam_mkhomedir.so skel=/etc/skel/ umask=0022" | tee -a /etc/pam.d/common-session
+
+
+echo --------------------------------------------------
+echo "Creating smb.conf"
+echo --------------------------------------------------
+if [[ ! -f /etc/samba/smb.conf.original ]]; then
+	echo "Backing up ... "
+	mv -v /etc/samba/smb.conf /etc/samba/smb.conf.original
+	touch $SAMBA_CONF
+	echo " ... ok"
+else
+	echo "Creating ... "
+	touch $SAMBA_CONF
+	echo " ... ok"
+fi
 
 echo --------------------------------------------------
 echo "Generating Samba configuration: \"$SAMBA_CONF\""
