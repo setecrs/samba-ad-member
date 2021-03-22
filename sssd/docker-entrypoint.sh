@@ -147,10 +147,11 @@ if [[ ! -f /etc/samba/smb.conf.original ]]; then
 	echo "Backing up ... "
 	mv -v /etc/samba/smb.conf /etc/samba/smb.conf.original
 fi
-	echo -n "Creating SMB.CONF... "
-	touch $SAMBA_CONF && echo "ok." || echo "FAILED"
-	echo -n "Creating Samba Private Directory ..."
-	mkdir -p /var/lib/samba/private && echo "ok." || echo "FAILED"
+
+echo -n "Creating SMB.CONF... "
+touch $SAMBA_CONF && echo "ok." || echo "FAILED"
+echo -n "Creating Samba Private Directory ..."
+mkdir -p /var/lib/samba/private && echo "ok." || echo "FAILED"
 
 echo --------------------------------------------------
 echo "Generating Samba configuration: \"$SAMBA_CONF\""
@@ -290,9 +291,9 @@ crudini --set $SAMBA_CONF $SHARE_NAME "oplocks" "yes"
 echo --------------------------------------------------
 echo 'Registering to Active Directory'
 echo --------------------------------------------------
+echo -n "Registering Windows Machine ..."
 if [[ ! -f /etc/samba/krb5.keytab ]]; then
-	echo -n "Registering Windows Machine ..."
-        net ads join -U"$AD_USERNAME"%"$AD_PASSWORD" && echo "OK." || echo "Failed."	
+	net ads join -U"$AD_USERNAME"%"$AD_PASSWORD" && echo "OK." || echo "Failed."	
 else 
 	echo "Already registered."
 	wbinfo --online-status
