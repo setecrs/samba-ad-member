@@ -273,19 +273,38 @@ crudini --set $SAMBA_CONF global "kerberos method" "$KERBEROS_METHOD"
 # crudini --set $SAMBA_CONF public "printable" "no"
 # crudini --set $SAMBA_CONF public "oplocks" "yes"
 
-# private shared directory (restricted)
+# private shared directory (restricted) - $SHARED_DIRECTORY ex: /tmp
 mkdir -p "$SHARED_DIRECTORY"
-crudini --set $SAMBA_CONF private "comment" "Shared Directory"
-crudini --set $SAMBA_CONF private "path" "$SHARED_DIRECTORY"
-crudini --set $SAMBA_CONF private "public" "yes"
-crudini --set $SAMBA_CONF private "guest ok" "no"
-crudini --set $SAMBA_CONF private "read only" "yes"
-crudini --set $SAMBA_CONF private "writeable" "no"
-crudini --set $SAMBA_CONF private "create mask" "0774"
-crudini --set $SAMBA_CONF private "directory mask" "0050"
-crudini --set $SAMBA_CONF private "browseable" "yes"
-crudini --set $SAMBA_CONF private "printable" "no"
-crudini --set $SAMBA_CONF private "oplocks" "yes"
+crudini --set $SAMBA_CONF $(echo $SHARED_DIRECTORY | awk '{split($1,dir,"/"); printf dir[length(dir)] }') "comment" "Shared Directory"
+crudini --set $SAMBA_CONF $(echo $SHARED_DIRECTORY | awk '{split($1,dir,"/"); printf dir[length(dir)] }') "path" "$SHARED_DIRECTORY"
+crudini --set $SAMBA_CONF $(echo $SHARED_DIRECTORY | awk '{split($1,dir,"/"); printf dir[length(dir)] }') "public" "yes"
+crudini --set $SAMBA_CONF $(echo $SHARED_DIRECTORY | awk '{split($1,dir,"/"); printf dir[length(dir)] }') "guest ok" "no"
+crudini --set $SAMBA_CONF $(echo $SHARED_DIRECTORY | awk '{split($1,dir,"/"); printf dir[length(dir)] }') "read only" "yes"
+crudini --set $SAMBA_CONF $(echo $SHARED_DIRECTORY | awk '{split($1,dir,"/"); printf dir[length(dir)] }') "writeable" "no"
+crudini --set $SAMBA_CONF $(echo $SHARED_DIRECTORY | awk '{split($1,dir,"/"); printf dir[length(dir)] }') "create mask" "0774"
+crudini --set $SAMBA_CONF $(echo $SHARED_DIRECTORY | awk '{split($1,dir,"/"); printf dir[length(dir)] }') "directory mask" "0050"
+crudini --set $SAMBA_CONF $(echo $SHARED_DIRECTORY | awk '{split($1,dir,"/"); printf dir[length(dir)] }') "browseable" "no"
+crudini --set $SAMBA_CONF $(echo $SHARED_DIRECTORY | awk '{split($1,dir,"/"); printf dir[length(dir)] }') "printable" "no"
+crudini --set $SAMBA_CONF $(echo $SHARED_DIRECTORY | awk '{split($1,dir,"/"); printf dir[length(dir)] }') "oplocks" "yes"
+
+
+echo --------------------------------------------------
+echo 'Registering to Active Directory'
+echo --------------------------------------------------
+if [[ ! -f /etc/samba/krb5.keytab ]]; then
+	echo -n "Registering Windows Machine ..."
+        net ads join -U"$AD_USERNAME"%"$AD_PASSWORD" && echo "OK." || echo "Failed."	
+else 
+	echo "Already registered."
+	wbinfo --online-status
+fi
+
+
+
+# Restrict Domain controllers to join as per ADMIN_SERVER environment variable
+crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "ad_server" "$(echo ${ADMIN_SERVER} | sed 's#\s#,#g')"
+# cat /etc/sssd/sssd.conf
+
 
 echo --------------------------------------------------
 echo "Updating NSSwitch configuration: \"/etc/nsswitch.conf\""
@@ -303,18 +322,7 @@ pam-auth-update
 #echo --------------------------------------------------
 #echo $AD_PASSWORD | kinit -V $AD_USERNAME@$REALM
 
-echo --------------------------------------------------
-echo 'Registering to Active Directory'
-echo --------------------------------------------------
-if [[ ! -f /etc/samba/krb5.keytab ]]; then
-        net ads join -U"$AD_USERNAME"%"$AD_PASSWORD"	
-fi
 
-# wbinfo --online-status
-
-# Restrict Domain controllers to join as per ADMIN_SERVER environment variable
-crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "ad_server" "$(echo ${ADMIN_SERVER} | sed 's#\s#,#g')"
-# cat /etc/sssd/sssd.conf
 
 echo --------------------------------------------------
 echo "Starting: \"sssd\""
