@@ -72,6 +72,7 @@ KERNEL_OPLOCKS=${KERNEL_OPLOCKS:-yes}
 MAX_XMIT=${MAX_XMIT:-65535}
 DEAD_TIME=${DEAD_TIME:-15}
 SHARED_DIRECTORY=${SHARED_DIRECTORY:-/usr/share/public}
+SHARE_NAME=${SHARE_NAME:-public}
 
 SAMBA_CONF=/etc/samba/smb.conf
 
@@ -275,17 +276,17 @@ crudini --set $SAMBA_CONF global "kerberos method" "$KERBEROS_METHOD"
 
 # private shared directory (restricted) - $SHARED_DIRECTORY ex: /tmp
 mkdir -p "$SHARED_DIRECTORY"
-crudini --set $SAMBA_CONF $(echo $SHARED_DIRECTORY | awk '{split($1,dir,"/"); printf dir[length(dir)] }') "comment" "Shared Directory"
-crudini --set $SAMBA_CONF $(echo $SHARED_DIRECTORY | awk '{split($1,dir,"/"); printf dir[length(dir)] }') "path" "$SHARED_DIRECTORY"
-crudini --set $SAMBA_CONF $(echo $SHARED_DIRECTORY | awk '{split($1,dir,"/"); printf dir[length(dir)] }') "public" "yes"
-crudini --set $SAMBA_CONF $(echo $SHARED_DIRECTORY | awk '{split($1,dir,"/"); printf dir[length(dir)] }') "guest ok" "no"
-crudini --set $SAMBA_CONF $(echo $SHARED_DIRECTORY | awk '{split($1,dir,"/"); printf dir[length(dir)] }') "read only" "yes"
-crudini --set $SAMBA_CONF $(echo $SHARED_DIRECTORY | awk '{split($1,dir,"/"); printf dir[length(dir)] }') "writeable" "no"
-crudini --set $SAMBA_CONF $(echo $SHARED_DIRECTORY | awk '{split($1,dir,"/"); printf dir[length(dir)] }') "create mask" "0774"
-crudini --set $SAMBA_CONF $(echo $SHARED_DIRECTORY | awk '{split($1,dir,"/"); printf dir[length(dir)] }') "directory mask" "0050"
-crudini --set $SAMBA_CONF $(echo $SHARED_DIRECTORY | awk '{split($1,dir,"/"); printf dir[length(dir)] }') "browseable" "no"
-crudini --set $SAMBA_CONF $(echo $SHARED_DIRECTORY | awk '{split($1,dir,"/"); printf dir[length(dir)] }') "printable" "no"
-crudini --set $SAMBA_CONF $(echo $SHARED_DIRECTORY | awk '{split($1,dir,"/"); printf dir[length(dir)] }') "oplocks" "yes"
+crudini --set $SAMBA_CONF $SHARE_NAME "comment" "Shared Directory"
+crudini --set $SAMBA_CONF $SHARE_NAME "path" "$SHARED_DIRECTORY"
+crudini --set $SAMBA_CONF $SHARE_NAME "public" "yes"
+crudini --set $SAMBA_CONF $SHARE_NAME "guest ok" "no"
+crudini --set $SAMBA_CONF $SHARE_NAME "read only" "yes"
+crudini --set $SAMBA_CONF $SHARE_NAME "writeable" "no"
+crudini --set $SAMBA_CONF $SHARE_NAME "create mask" "0774"
+crudini --set $SAMBA_CONF $SHARE_NAME "directory mask" "0050"
+crudini --set $SAMBA_CONF $SHARE_NAME "browseable" "no"
+crudini --set $SAMBA_CONF $SHARE_NAME "printable" "no"
+crudini --set $SAMBA_CONF $SHARE_NAME "oplocks" "yes"
 
 
 echo --------------------------------------------------
