@@ -55,13 +55,13 @@ RUN chmod 777 /home
 
 RUN env --unset=DEBIAN_FRONTEND
 
-COPY docker-entrypoint.sh /docker-entrypoint.sh
-RUN chmod +x /docker-entrypoint.sh
+COPY docker-entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 COPY assets/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 EXPOSE 137 138 139 445
 
-ENTRYPOINT ["/docker-entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/supervisord","-c","/etc/supervisor/conf.d/supervisord.conf"]
 
 
