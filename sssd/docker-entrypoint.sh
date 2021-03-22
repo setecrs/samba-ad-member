@@ -141,18 +141,16 @@ echo "session required pam_mkhomedir.so skel=/etc/skel/ umask=0022" | tee -a /et
 
 
 echo --------------------------------------------------
-echo "Creating smb.conf"
+echo "Creating smb environment"
 echo --------------------------------------------------
 if [[ ! -f /etc/samba/smb.conf.original ]]; then
 	echo "Backing up ... "
 	mv -v /etc/samba/smb.conf /etc/samba/smb.conf.original
-	touch $SAMBA_CONF
-	echo " ... ok"
-else
-	echo "Creating ... "
-	touch $SAMBA_CONF
-	echo " ... ok"
 fi
+	echo -n "Creating SMB.CONF... "
+	touch $SAMBA_CONF && echo "ok." || echo "FAILED"
+	echo -n "Creating Samba Private Directory ..."
+	mkdir -p /var/lib/samba/private && echo "ok." || echo "FAILED"
 
 echo --------------------------------------------------
 echo "Generating Samba configuration: \"$SAMBA_CONF\""
