@@ -71,7 +71,7 @@ OPLOCKS=${OPLOCKS:-no}
 LEVEL2_OPLOCKS=${LEVEL2_OPLOCKS:-no}
 KERNEL_OPLOCKS=${KERNEL_OPLOCKS:-yes}
 MAX_XMIT=${MAX_XMIT:-65535}
-DEAD_TIME=${DEAD_TIME:-15}
+DEAD_TIME=${DEAD_TIME:-0}
 SHARED_DIRECTORY=${SHARED_DIRECTORY:-/usr/share/public}
 SHARE_NAME=${SHARE_NAME:-public}
 
@@ -86,15 +86,13 @@ echo $TZ | tee /etc/timezone
 dpkg-reconfigure --frontend noninteractive tzdata
 
 
-echo --------------------------------------------------
-echo "Setting up DNS resolv.conf: \"${DOMAIN_NAME^^}\""
-echo --------------------------------------------------
-
-cat > /etc/resolv.conf << EOL
-nameserver ${DNS_SERVER}   
-search ${DOMAIN_NAME}
-
-EOL
+#echo --------------------------------------------------
+#echo "Setting up DNS resolv.conf: \"${DOMAIN_NAME^^}\""
+#echo --------------------------------------------------
+#cat > /etc/resolv.conf << EOL
+#nameserver ${DNS_SERVER}   
+#search ${DOMAIN_NAME}
+#EOL
 
 
 echo --------------------------------------------------
@@ -190,13 +188,13 @@ echo "Creating smb environment"
 echo --------------------------------------------------
 if [[ ! -f /etc/samba/smb.conf.original ]]; then
 	echo "Backing up ... "
-	mv -v /etc/samba/smb.conf /etc/samba/smb.conf.original
+	mv -vf /etc/samba/smb.conf /etc/samba/smb.conf.original
 fi
 
 echo -n "Creating SMB.CONF... "
 touch $SAMBA_CONF && echo "ok." || echo "FAILED"
-echo -n "Creating Samba Private Directory ..."
-mkdir -p /var/lib/samba/private && echo "ok." || echo "FAILED"
+echo -n "Creating Samba Directories ..."
+mkdir -p /var/lib/samba/private /var/lib/samba/usershares && echo "ok." || echo "FAILED"
 
 echo --------------------------------------------------
 echo "Generating Samba configuration: \"$SAMBA_CONF\""
@@ -301,7 +299,7 @@ crudini --set $SAMBA_CONF global "kerberos method" "$KERBEROS_METHOD"
 # home shared directory (restricted to owner)
 crudini --set $SAMBA_CONF homes "comment" "Home Directories"
 crudini --set $SAMBA_CONF homes "path" "/home/%u/Desktop"
-crudini --set $SAMBA_CONF homes "public" "yes"
+crudini --set $SAMBA_CONF homes "public" "no"
 crudini --set $SAMBA_CONF homes "guest ok" "no"
 crudini --set $SAMBA_CONF homes "read only" "no"
 crudini --set $SAMBA_CONF homes "writeable" "yes"
@@ -311,7 +309,7 @@ crudini --set $SAMBA_CONF homes "browseable" "no"
 crudini --set $SAMBA_CONF homes "printable" "no"
 crudini --set $SAMBA_CONF homes "oplocks" "yes"
 crudini --set $SAMBA_CONF homes "valid users" "%S"
-crudini --set $SAMBA_CONF homes "hide unreadable" yes
+crudini --set $SAMBA_CONF homes "hide unreadable" "yes"
 
 # # public shared directory (unrestricted)
 # mkdir -p "/usr/share/public"
@@ -340,7 +338,7 @@ crudini --set $SAMBA_CONF $SHARE_NAME "directory mask" "0050"
 crudini --set $SAMBA_CONF $SHARE_NAME "browseable" "no"
 crudini --set $SAMBA_CONF $SHARE_NAME "printable" "no"
 crudini --set $SAMBA_CONF $SHARE_NAME "oplocks" "yes"
-crudini --set $SAMBA_CONF $SHARE_NAME "hide unreadable" yes
+crudini --set $SAMBA_CONF $SHARE_NAME "hide unreadable" "yes"
 
 
 echo --------------------------------------------------
