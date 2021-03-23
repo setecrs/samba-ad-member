@@ -36,7 +36,7 @@ WINBIND_UID=${WINBIND_UID:-50-9999999999}
 WINBIND_GID=${WINBIND_GID:-50-9999999999}
 WINBIND_ENUM_USERS=${WINBIND_ENUM_USERS:-yes}
 WINBIND_ENUM_GROUPS=${WINBIND_ENUM_GROUPS:-yes}
-TEMPLATE_HOMEDIR=${TEMPLATE_HOMEDIR:-/home/%D/%U}
+TEMPLATE_HOMEDIR=${TEMPLATE_HOMEDIR:-/home/%U}
 TEMPLATE_SHELL=${TEMPLATE_SHELL:-/bin/bash}
 # now kerberos is run by samba
 DEDICATED_KEYTAB_FILE=${DEDICATED_KEYTAB_FILE:-/etc/krb5.keytab}
@@ -299,18 +299,19 @@ crudini --set $SAMBA_CONF global "kerberos method" "$KERBEROS_METHOD"
 
 
 # home shared directory (restricted to owner)
-crudini --set $SAMBA_CONF home "comment" "Home Directories"
-crudini --set $SAMBA_CONF home "path" "/home/"
-crudini --set $SAMBA_CONF home "public" "yes"
-crudini --set $SAMBA_CONF home "guest ok" "no"
-crudini --set $SAMBA_CONF home "read only" "no"
-crudini --set $SAMBA_CONF home "writeable" "yes"
-crudini --set $SAMBA_CONF home "create mask" "0777"
-crudini --set $SAMBA_CONF home "directory mask" "0777"
-crudini --set $SAMBA_CONF home "browseable" "yes"
-crudini --set $SAMBA_CONF home "printable" "no"
-crudini --set $SAMBA_CONF home "oplocks" "yes"
-crudini --set $SAMBA_CONF home "valid users" "%S"
+crudini --set $SAMBA_CONF homes "comment" "Home Directories"
+crudini --set $SAMBA_CONF homes "path" "/home/%u/Desktop"
+crudini --set $SAMBA_CONF homes "public" "yes"
+crudini --set $SAMBA_CONF homes "guest ok" "no"
+crudini --set $SAMBA_CONF homes "read only" "no"
+crudini --set $SAMBA_CONF homes "writeable" "yes"
+crudini --set $SAMBA_CONF homes "create mask" "0777"
+crudini --set $SAMBA_CONF homes "directory mask" "0777"
+crudini --set $SAMBA_CONF homes "browseable" "no"
+crudini --set $SAMBA_CONF homes "printable" "no"
+crudini --set $SAMBA_CONF homes "oplocks" "yes"
+crudini --set $SAMBA_CONF homes "valid users" "%S"
+crudini --set $SAMBA_CONF homes "hide unreadable" yes
 
 # # public shared directory (unrestricted)
 # mkdir -p "/usr/share/public"
@@ -339,6 +340,7 @@ crudini --set $SAMBA_CONF $SHARE_NAME "directory mask" "0050"
 crudini --set $SAMBA_CONF $SHARE_NAME "browseable" "no"
 crudini --set $SAMBA_CONF $SHARE_NAME "printable" "no"
 crudini --set $SAMBA_CONF $SHARE_NAME "oplocks" "yes"
+crudini --set $SAMBA_CONF $SHARE_NAME "hide unreadable" yes
 
 
 echo --------------------------------------------------
