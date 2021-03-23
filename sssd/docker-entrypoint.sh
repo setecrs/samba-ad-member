@@ -256,6 +256,14 @@ crudini --set $SAMBA_CONF global "winbind gid" "$WINBIND_GID"
 crudini --set $SAMBA_CONF global "winbind use default domain" "$WINDBIND_USE_DEFAULT_DOMAIN"
 crudini --set $SAMBA_CONF global "winbind enum users" "$WINBIND_ENUM_USERS"
 crudini --set $SAMBA_CONF global "winbind enum groups" "$WINBIND_ENUM_GROUPS"
+
+crudini --set $SAMBA_CONF global "idmap config * : backend" "tdb"
+crudini --set $SAMBA_CONF global "idmap config * : range" "2000-3999"
+crudini --set $SAMBA_CONF global "idmap config $WORKGROUP:backend" "ad"
+crudini --set $SAMBA_CONF global "idmap config $WORKGROUP:schema_mode" "rfc2307"
+crudini --set $SAMBA_CONF global "idmap config $WORKGROUP:range" "10000-999999"
+
+
 crudini --set $SAMBA_CONF global "template homedir" "$TEMPLATE_HOMEDIR"
 crudini --set $SAMBA_CONF global "template shell" "$TEMPLATE_SHELL"
 crudini --set $SAMBA_CONF global "client use spnego" "$CLIENT_USE_SPNEGO"
