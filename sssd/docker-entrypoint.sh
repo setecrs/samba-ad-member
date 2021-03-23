@@ -84,6 +84,21 @@ echo --------------------------------------------------
 echo $TZ | tee /etc/timezone
 dpkg-reconfigure --frontend noninteractive tzdata
 
+
+echo --------------------------------------------------
+echo "Setting up DNS resolv.conf: \"${DOMAIN_NAME^^}\""
+echo --------------------------------------------------
+
+cat > /etc/resolv.conf << EOL
+nameserver ${DNS_SERVER^^}   
+search ${DOMAIN_NAME^^}
+
+EOL
+
+
+
+
+
 echo --------------------------------------------------
 echo "Setting up Kerberos realm: \"${DOMAIN_NAME^^}\""
 echo --------------------------------------------------
@@ -104,6 +119,26 @@ cat > /etc/krb5.conf << EOL
 
 EOL
 
+echo --------------------------------------------------
+echo "Discovering domain specifications"
+echo --------------------------------------------------
+## realm discover -v ${DOMAIN_NAME,,}
+realm discover -v $(echo $ADMIN_SERVER | awk '{print $1}')
+
+echo --------------------------------------------------
+echo "Joining domain: \"${DOMAIN_NAME,,}\""
+echo --------------------------------------------------
+##echo $AD_PASSWORD | /usr/sbin/adcli join --verbose --domain ${DOMAIN_NAME,,} --domain-realm ${DOMAIN_NAME^^} --domain-controller $(echo ${ADMIN_SERVER,,} | awk '{print $1}') --login-type user --login-user $AD_USERNAME --stdin-password
+##echo $AD_PASSWORD | realm join -v ${DOMAIN_NAME,,} --user=$AD_USERNAME
+printf $AD_PASSWORD | realm join -v $(echo ${ADMIN_SERVER,,} | awk '{print $1}') --user=$AD_USERNAME
+##echo $AD_PASSWORD | realm join --user="${DOMAIN_NAME^^}\\$AD_USERNAME" $(echo $ADMIN_SERVER | awk '{print $1}')
+
+echo --------------------------------------------------
+echo 'Generating Kerberos ticket'
+echo --------------------------------------------------
+echo $AD_PASSWORD | kinit -V $AD_USERNAME@$REALM
+
+
 #echo --------------------------------------------------
 #echo "Setting up guest user credential: \"$GUEST_USERNAME\""
 #echo --------------------------------------------------
@@ -118,26 +153,13 @@ echo " Starting system message bus"
 echo --------------------------------------------------
 /etc/init.d/dbus start
 
-#echo --------------------------------------------------
-#echo "Discovering domain specifications"
-#echo --------------------------------------------------
-## realm discover -v ${DOMAIN_NAME,,}
-#realm discover -v $(echo $ADMIN_SERVER | awk '{print $1}')
-
-#echo --------------------------------------------------
-#echo "Joining domain: \"${DOMAIN_NAME,,}\""
-#echo --------------------------------------------------
-##echo $AD_PASSWORD | /usr/sbin/adcli join --verbose --domain ${DOMAIN_NAME,,} --domain-realm ${DOMAIN_NAME^^} --domain-controller $(echo ${ADMIN_SERVER,,} | awk '{print $1}') --login-type user --login-user $AD_USERNAME --stdin-password
-##echo $AD_PASSWORD | realm join -v ${DOMAIN_NAME,,} --user=$AD_USERNAME
-#printf $AD_PASSWORD | realm join -v $(echo ${ADMIN_SERVER,,} | awk '{print $1}') --user=$AD_USERNAME
-##echo $AD_PASSWORD | realm join --user="${DOMAIN_NAME^^}\\$AD_USERNAME" $(echo $ADMIN_SERVER | awk '{print $1}')
 
 
 
-echo --------------------------------------------------
-echo "Activating home directory auto-creation"
-echo --------------------------------------------------
-echo "session required pam_mkhomedir.so skel=/etc/skel/ umask=0022" | tee -a /etc/pam.d/common-session
+#echo --------------------------------------------------
+#echo "Activating home directory auto-creation"
+#echo --------------------------------------------------
+#echo "session required pam_mkhomedir.so skel=/etc/skel/ umask=0022" | tee -a /etc/pam.d/common-session
 
 
 echo --------------------------------------------------
@@ -316,13 +338,6 @@ if [[ ! `grep "winbind" /etc/nsswitch.conf` ]]; then
 fi
 
 pam-auth-update
-
-#echo --------------------------------------------------
-#echo 'Generating Kerberos ticket'
-#echo --------------------------------------------------
-#echo $AD_PASSWORD | kinit -V $AD_USERNAME@$REALM
-
-
 
 echo --------------------------------------------------
 echo "Starting: \"sssd\""
