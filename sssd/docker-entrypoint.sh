@@ -97,6 +97,10 @@ search ${DOMAIN_NAME^^}
 EOL
 
 
+echo --------------------------------------------------
+echo " Starting system message bus"
+echo --------------------------------------------------
+/etc/init.d/dbus start
 
 
 
@@ -149,10 +153,6 @@ echo $AD_PASSWORD | kinit -V $AD_USERNAME@$REALM
 ##echo $GUEST_PASSWORD | tee - | smbpasswd -a -s $GUEST_USERNAME
 #smbpasswd -a -s $GUEST_USERNAME -w $GUEST_PASSWORD
 
-echo --------------------------------------------------
-echo " Starting system message bus"
-echo --------------------------------------------------
-/etc/init.d/dbus start
 
 
 
