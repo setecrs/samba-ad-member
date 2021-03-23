@@ -186,7 +186,7 @@ echo $AD_PASSWORD | kinit -V $AD_USERNAME@$REALM
 echo --------------------------------------------------
 echo "Creating smb environment"
 echo --------------------------------------------------
-if [[ ! -f /etc/samba/smb.conf.original ]]; then
+if [[  -f /etc/samba/smb.conf ]]; then
 	echo "Backing up ... "
 	mv -vf /etc/samba/smb.conf /etc/samba/smb.conf.original
 fi
