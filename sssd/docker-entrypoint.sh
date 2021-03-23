@@ -349,8 +349,8 @@ fi
 # Restrict Domain controllers to join as per ADMIN_SERVER environment variable
 
 crudini --set /etc/sssd/sssd.conf sssd "config_file_version" 2 
-crudini --set /etc/sssd/sssd.conf sssd "domain" ${DOMAIN_NAME}
-crudini --set /etc/sssd/sssd.conf sssd "services" nss, pam
+crudini --set /etc/sssd/sssd.conf sssd "domain" "${DOMAIN_NAME^^}"
+crudini --set /etc/sssd/sssd.conf sssd "services" nss,pam
 
 crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "ad_server" "$(echo ${ADMIN_SERVER} | sed 's#\s#,#g')"
 crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "id_provider" "ad"
