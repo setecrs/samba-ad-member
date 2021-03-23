@@ -290,19 +290,19 @@ crudini --set $SAMBA_CONF global "dedicated keytab file" "$DEDICATED_KEYTAB_FILE
 crudini --set $SAMBA_CONF global "kerberos method" "$KERBEROS_METHOD"
 
 
-# # home shared directory (restricted to owner)
-# crudini --set $SAMBA_CONF home "comment" "Home Directories"
-# crudini --set $SAMBA_CONF home "path" "/home/"
-# crudini --set $SAMBA_CONF home "public" "yes"
-# crudini --set $SAMBA_CONF home "guest ok" "no"
-# crudini --set $SAMBA_CONF home "read only" "no"
-# crudini --set $SAMBA_CONF home "writeable" "yes"
-# crudini --set $SAMBA_CONF home "create mask" "0777"
-# crudini --set $SAMBA_CONF home "directory mask" "0777"
-# crudini --set $SAMBA_CONF home "browseable" "yes"
-# crudini --set $SAMBA_CONF home "printable" "no"
-# crudini --set $SAMBA_CONF home "oplocks" "yes"
-#crudini --set $SAMBA_CONF home "valid users" "%S"
+# home shared directory (restricted to owner)
+crudini --set $SAMBA_CONF home "comment" "Home Directories"
+crudini --set $SAMBA_CONF home "path" "/home/"
+crudini --set $SAMBA_CONF home "public" "yes"
+crudini --set $SAMBA_CONF home "guest ok" "no"
+crudini --set $SAMBA_CONF home "read only" "no"
+crudini --set $SAMBA_CONF home "writeable" "yes"
+crudini --set $SAMBA_CONF home "create mask" "0777"
+crudini --set $SAMBA_CONF home "directory mask" "0777"
+crudini --set $SAMBA_CONF home "browseable" "yes"
+crudini --set $SAMBA_CONF home "printable" "no"
+crudini --set $SAMBA_CONF home "oplocks" "yes"
+crudini --set $SAMBA_CONF home "valid users" "%S"
 
 # # public shared directory (unrestricted)
 # mkdir -p "/usr/share/public"
@@ -347,26 +347,38 @@ fi
 
 
 # Restrict Domain controllers to join as per ADMIN_SERVER environment variable
+chown 0600 /etc/sssd/sssd.conf
+crudini --set /etc/sssd/sssd.conf sssd "config_file_version" 2 
+crudini --set /etc/sssd/sssd.conf sssd "domain" ${DOMAIN_NAME}
+crudini --set /etc/sssd/sssd.conf sssd "services" nss, pam
+
 crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "ad_server" "$(echo ${ADMIN_SERVER} | sed 's#\s#,#g')"
+crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "id_provider" "ad"
+crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "auth_provider" "ad"
+crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "access_provider" "ad"
+crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "default_shell" "/bina/bash"
+crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "fallback_homedir" "/home/%u"
+
 # cat /etc/sssd/sssd.conf
 
-
-echo --------------------------------------------------
-echo "Updating NSSwitch configuration: \"/etc/nsswitch.conf\""
-echo --------------------------------------------------
-if [[ ! `grep "winbind" /etc/nsswitch.conf` ]]; then
-    sed -i "s#^\(passwd\:\s*compat\)\s*\(.*\)\$#\1 \2 winbind#" /etc/nsswitch.conf
-    sed -i "s#^\(group\:\s*compat\)\s*\(.*\)\$#\1 \2 winbind#" /etc/nsswitch.conf
-    sed -i "s#^\(shadow\:\s*compat\)\s*\(.*\)\$#\1 \2 winbind#" /etc/nsswitch.conf
-fi
-
-pam-auth-update
 
 echo --------------------------------------------------
 echo "Starting: \"sssd\""
 echo --------------------------------------------------
 timeout 30s /etc/init.d/sssd restart
 timeout 30s /etc/init.d/sssd status
+
+#echo --------------------------------------------------
+#echo "Updating NSSwitch configuration: \"/etc/nsswitch.conf\""
+#echo --------------------------------------------------
+#if [[ ! `grep "winbind" /etc/nsswitch.conf` ]]; then
+#    sed -i "s#^\(passwd\:\s*compat\)\s*\(.*\)\$#\1 \2 winbind#" /etc/nsswitch.conf
+#    sed -i "s#^\(group\:\s*compat\)\s*\(.*\)\$#\1 \2 winbind#" /etc/nsswitch.conf
+#    sed -i "s#^\(shadow\:\s*compat\)\s*\(.*\)\$#\1 \2 winbind#" /etc/nsswitch.conf
+#fi
+
+pam-auth-update
+
 
 
 echo --------------------------------------------------
