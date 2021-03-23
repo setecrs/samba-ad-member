@@ -360,7 +360,7 @@ crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "default_shell" "/bi
 crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "fallback_homedir" "/home/%u"
 
 # cat /etc/sssd/sssd.conf
-chown 0600 /etc/sssd/sssd.conf
+chmod 0600 /etc/sssd/sssd.conf
 
 echo --------------------------------------------------
 echo "Starting: \"sssd\""
