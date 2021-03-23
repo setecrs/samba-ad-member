@@ -91,8 +91,8 @@ echo "Setting up DNS resolv.conf: \"${DOMAIN_NAME^^}\""
 echo --------------------------------------------------
 
 cat > /etc/resolv.conf << EOL
-nameserver ${DNS_SERVER^^}   
-search ${DOMAIN_NAME^^}
+nameserver ${DNS_SERVER}   
+search ${DOMAIN_NAME}
 
 EOL
 
