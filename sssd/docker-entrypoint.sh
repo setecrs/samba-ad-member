@@ -347,7 +347,7 @@ fi
 
 
 # Restrict Domain controllers to join as per ADMIN_SERVER environment variable
-chown 0600 /etc/sssd/sssd.conf
+
 crudini --set /etc/sssd/sssd.conf sssd "config_file_version" 2 
 crudini --set /etc/sssd/sssd.conf sssd "domain" ${DOMAIN_NAME}
 crudini --set /etc/sssd/sssd.conf sssd "services" nss, pam
@@ -360,7 +360,7 @@ crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "default_shell" "/bi
 crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "fallback_homedir" "/home/%u"
 
 # cat /etc/sssd/sssd.conf
-
+chown 0600 /etc/sssd/sssd.conf
 
 echo --------------------------------------------------
 echo "Starting: \"sssd\""
