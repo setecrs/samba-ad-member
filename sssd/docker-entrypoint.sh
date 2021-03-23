@@ -121,7 +121,29 @@ cat > /etc/krb5.conf << EOL
     default_realm = ${DOMAIN_NAME^^}
     dns_lookup_realm = false
     dns_lookup_kdc = false
-
+    
+    
+[realms]
+    ${DOMAIN_NAME^^} = {
+        kdc = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
+        admin_server = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
+        default_domain = ${DOMAIN_NAME^^}       
+    }
+    ${DOMAIN_NAME,,} = {
+        kdc = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
+        admin_server = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
+        default_domain = ${DOMAIN_NAME,,}
+    }
+    ${WORKGROUP^^} = {
+        kdc = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
+        admin_server = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
+        default_domain = ${DOMAIN_NAME^^}       
+    }
+    
+[domain_realm]
+    .${DOMAIN_NAME,,} = ${DOMAIN_NAME^^}
+    ${DOMAIN_NAME,,} = ${DOMAIN_NAME^^}
+    
 EOL
 
 echo --------------------------------------------------
