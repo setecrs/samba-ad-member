@@ -389,9 +389,8 @@ timeout 30s /etc/init.d/sssd status
 pam-auth-update
 
 echo --------------------------------------------------
-echo 'Starting cron'
+echo 'Starting Cron'
 echo --------------------------------------------------
-/etc/init.d/cron enable
 /etc/init.d/cron start
 /etc/init.d/cron status
 
