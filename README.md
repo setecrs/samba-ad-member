@@ -24,7 +24,7 @@ docker run -it --rm --add-host "docker-smb.localdomain.loc docker-smb":<host ip 
 -p 138:138/udp \
 -p 139:139/tcp \
 -p 445:445/tcp \
-fjudith/samba-join-ad
+setecrs/samba-ad-member
 ```
 
 # Reference
@@ -33,3 +33,4 @@ fjudith/samba-join-ad
 * https://github.com/docker/docker/issues/12084
 * http://www.enterprisenetworkingplanet.com/windows/article.php/3849061/Use-Samba-With-Windows-7-Clients.htm
 * https://wiki.samba.org/index.php/Setting_up_a_Share_Using_Windows_ACLs
+* https://wiki.samba.org/index.php/Setting_up_Samba_as_a_Domain_Member
