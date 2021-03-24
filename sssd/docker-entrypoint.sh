@@ -37,7 +37,7 @@ WINBIND_GID=${WINBIND_GID:-50-9999999999}
 WINBIND_ENUM_USERS=${WINBIND_ENUM_USERS:-yes}
 WINBIND_ENUM_GROUPS=${WINBIND_ENUM_GROUPS:-yes}
 TEMPLATE_HOMEDIR=${TEMPLATE_HOMEDIR:-/home/%U}
-TEMPLATE_SHELL=${TEMPLATE_SHELL:-/bin/bash}
+TEMPLATE_SHELL=${TEMPLATE_SHELL:-/dev/null}
 # now kerberos is run by samba
 DEDICATED_KEYTAB_FILE=${DEDICATED_KEYTAB_FILE:-/etc/krb5.keytab}
 KERBEROS_METHOD=${KERBEROS_METHOD:-secrets and keytab}
@@ -152,11 +152,10 @@ echo --------------------------------------------------
 echo $AD_PASSWORD | kinit -V $AD_USERNAME@$REALM
 
 
-
-#echo --------------------------------------------------
-#echo "Activating home directory auto-creation"
-#echo --------------------------------------------------
-#echo "session required pam_mkhomedir.so skel=/etc/skel/ umask=0022" | tee -a /etc/pam.d/common-session
+echo --------------------------------------------------
+echo "Activating home directory auto-creation"
+echo --------------------------------------------------
+echo "session required pam_mkhomedir.so skel=/etc/skel/ umask=0022" | tee -a /etc/pam.d/common-session
 
 
 echo --------------------------------------------------
@@ -240,8 +239,8 @@ crudini --set $SAMBA_CONF global "idmap config $WORKGROUP:backend" "ad"
 crudini --set $SAMBA_CONF global "idmap config $WORKGROUP:schema_mode" "rfc2307"
 crudini --set $SAMBA_CONF global "idmap config $WORKGROUP:range" "10000-999999"
 
-#crudini --set $SAMBA_CONF global "template homedir" "$TEMPLATE_HOMEDIR"
-#crudini --set $SAMBA_CONF global "template shell" "$TEMPLATE_SHELL"
+crudini --set $SAMBA_CONF global "template homedir" "$TEMPLATE_HOMEDIR"
+crudini --set $SAMBA_CONF global "template shell" "$TEMPLATE_SHELL"
 crudini --set $SAMBA_CONF global "client use spnego" "$CLIENT_USE_SPNEGO"
 crudini --set $SAMBA_CONF global "client ntlmv2 auth" "$CLIENT_NTLMV2_AUTH"
 crudini --set $SAMBA_CONF global "encrypt passwords" "$ENCRYPT_PASSWORDS"
@@ -274,20 +273,20 @@ crudini --set $SAMBA_CONF global "dedicated keytab file" "$DEDICATED_KEYTAB_FILE
 crudini --set $SAMBA_CONF global "kerberos method" "$KERBEROS_METHOD"
 
 
-## home shared directory (restricted to owner)
-#crudini --set $SAMBA_CONF homes "comment" "Home Directories"
-#crudini --set $SAMBA_CONF homes "path" "%H"
-#crudini --set $SAMBA_CONF homes "public" "no"
-#crudini --set $SAMBA_CONF homes "guest ok" "no"
-#crudini --set $SAMBA_CONF homes "read only" "no"
-#crudini --set $SAMBA_CONF homes "writeable" "yes"
-#crudini --set $SAMBA_CONF homes "create mask" "0777"
-#crudini --set $SAMBA_CONF homes "directory mask" "0777"
-#crudini --set $SAMBA_CONF homes "browseable" "no"
-#crudini --set $SAMBA_CONF homes "printable" "no"
-#crudini --set $SAMBA_CONF homes "oplocks" "yes"
-#crudini --set $SAMBA_CONF homes "valid users" "%S"
-#crudini --set $SAMBA_CONF homes "hide unreadable" "yes"
+# home shared directory (restricted to owner)
+crudini --set $SAMBA_CONF homes "comment" "Home Directories"
+crudini --set $SAMBA_CONF homes "path" "%H"
+crudini --set $SAMBA_CONF homes "public" "no"
+crudini --set $SAMBA_CONF homes "guest ok" "no"
+crudini --set $SAMBA_CONF homes "read only" "no"
+crudini --set $SAMBA_CONF homes "writeable" "yes"
+crudini --set $SAMBA_CONF homes "create mask" "0777"
+crudini --set $SAMBA_CONF homes "directory mask" "0777"
+crudini --set $SAMBA_CONF homes "browseable" "no"
+crudini --set $SAMBA_CONF homes "printable" "no"
+crudini --set $SAMBA_CONF homes "oplocks" "yes"
+crudini --set $SAMBA_CONF homes "valid users" "%S"
+crudini --set $SAMBA_CONF homes "hide unreadable" "yes"
 
 # # public shared directory (unrestricted)
 # mkdir -p "/usr/share/public"
@@ -304,19 +303,19 @@ crudini --set $SAMBA_CONF global "kerberos method" "$KERBEROS_METHOD"
 # crudini --set $SAMBA_CONF public "oplocks" "yes"
 
 # private shared directory (restricted) - $SHARED_DIRECTORY ex: /tmp
-mkdir -p "$SHARED_DIRECTORY"
-crudini --set $SAMBA_CONF $SHARE_NAME "comment" "Shared Directory"
-crudini --set $SAMBA_CONF $SHARE_NAME "path" "$SHARED_DIRECTORY"
-crudini --set $SAMBA_CONF $SHARE_NAME "public" "yes"
-crudini --set $SAMBA_CONF $SHARE_NAME "guest ok" "no"
-crudini --set $SAMBA_CONF $SHARE_NAME "read only" "yes"
-crudini --set $SAMBA_CONF $SHARE_NAME "writeable" "no"
-crudini --set $SAMBA_CONF $SHARE_NAME "create mask" "0774"
-crudini --set $SAMBA_CONF $SHARE_NAME "directory mask" "0050"
-crudini --set $SAMBA_CONF $SHARE_NAME "browseable" "no"
-crudini --set $SAMBA_CONF $SHARE_NAME "printable" "no"
-crudini --set $SAMBA_CONF $SHARE_NAME "oplocks" "yes"
-crudini --set $SAMBA_CONF $SHARE_NAME "hide unreadable" "yes"
+#mkdir -p "$SHARED_DIRECTORY"
+#crudini --set $SAMBA_CONF $SHARE_NAME "comment" "Shared Directory"
+#crudini --set $SAMBA_CONF $SHARE_NAME "path" "$SHARED_DIRECTORY"
+#crudini --set $SAMBA_CONF $SHARE_NAME "public" "yes"
+#crudini --set $SAMBA_CONF $SHARE_NAME "guest ok" "no"
+#crudini --set $SAMBA_CONF $SHARE_NAME "read only" "yes"
+#crudini --set $SAMBA_CONF $SHARE_NAME "writeable" "no"
+#crudini --set $SAMBA_CONF $SHARE_NAME "create mask" "0774"
+#crudini --set $SAMBA_CONF $SHARE_NAME "directory mask" "0050"
+#crudini --set $SAMBA_CONF $SHARE_NAME "browseable" "no"
+#crudini --set $SAMBA_CONF $SHARE_NAME "printable" "no"
+#crudini --set $SAMBA_CONF $SHARE_NAME "oplocks" "yes"
+#crudini --set $SAMBA_CONF $SHARE_NAME "hide unreadable" "yes"
 
 
 echo --------------------------------------------------
