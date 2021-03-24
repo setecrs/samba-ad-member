@@ -204,6 +204,9 @@ crudini --set $SAMBA_CONF global "passdb backend" "tdbsam"
 crudini --set $SAMBA_CONF global "realm" "$REALM"
 
 # Disable Printers.
+crudini --set $SAMBA_CONF global "load printers" "no"
+crudini --set $SAMBA_CONF global "printing" "bsd"
+crudini --set $SAMBA_CONF global "disable spoolss" "yes"
 crudini --set $SAMBA_CONF global "printcap name" "/dev/null"
 crudini --set $SAMBA_CONF global "panic action" "no"
 crudini --set $SAMBA_CONF global "cups options" "raw"
