@@ -64,6 +64,7 @@ RUN chmod +x /etc/cron.hourly/groupmonitor
 RUN rm /etc/cron.daily/*
 COPY assets/userlinks /etc/cron.daily/userlinks
 RUN chmod +x /etc/cron.daily/userlinks
+RUN systemctl enable cron
 
 
 EXPOSE 137 138 139 445
