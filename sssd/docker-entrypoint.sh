@@ -391,8 +391,9 @@ pam-auth-update
 echo --------------------------------------------------
 echo 'Starting cron'
 echo --------------------------------------------------
-#/etc/init.d/cron enable
+/etc/init.d/cron enable
 /etc/init.d/cron start
+/etc/init.d/cron status
 
 
 
