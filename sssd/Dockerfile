@@ -60,6 +60,8 @@ RUN chmod +x /entrypoint.sh
 COPY assets/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY assets/groupmonitor /etc/cron.hourly/groupmonitor
 RUN chmod +x /etc/cron.hourly/groupmonitor
+COPY assets/userlinks /etc/cron.hourly/userlinks
+RUN chmod +x /etc/cron.hourly/userlinks
 RUN rm /etc/cron.daily/*
 
 EXPOSE 137 138 139 445
