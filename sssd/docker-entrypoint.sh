@@ -373,7 +373,7 @@ pam-auth-update
 echo --------------------------------------------------
 echo 'Starting Cron'
 echo --------------------------------------------------
-/etc/init.d/cron start
+/etc/init.d/cron restart
 /etc/init.d/cron status
 echo --------------------------------------------------
 echo 'User links First RUN'
