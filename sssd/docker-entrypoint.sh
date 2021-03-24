@@ -87,15 +87,6 @@ echo $TZ | tee /etc/timezone
 dpkg-reconfigure --frontend noninteractive tzdata
 
 
-#echo --------------------------------------------------
-#echo "Setting up DNS resolv.conf: \"${DOMAIN_NAME^^}\""
-#echo --------------------------------------------------
-#cat > /etc/resolv.conf << EOL
-#nameserver ${DNS_SERVER}   
-#search ${DOMAIN_NAME}
-#EOL
-
-
 echo --------------------------------------------------
 echo " Starting system message bus"
 echo --------------------------------------------------
@@ -106,10 +97,6 @@ echo --------------------------------------------------
 echo --------------------------------------------------
 echo "Setting up Kerberos realm: \"${DOMAIN_NAME^^}\""
 echo --------------------------------------------------
-#if [[ ! -f /etc/krb5.conf.original ]]; then
-#	mv /etc/krb5.conf /etc/krb5.conf.original
-#fi
-
 cat > /etc/krb5.conf << EOL
 [logging]
     default = FILE:/var/log/krb5.log 
@@ -120,7 +107,7 @@ cat > /etc/krb5.conf << EOL
     default_realm = ${DOMAIN_NAME^^}
     dns_lookup_realm = false
     dns_lookup_kdc = false
-    
+   
     
 [realms]
     ${DOMAIN_NAME^^} = {
@@ -163,18 +150,6 @@ echo --------------------------------------------------
 echo 'Generating Kerberos ticket'
 echo --------------------------------------------------
 echo $AD_PASSWORD | kinit -V $AD_USERNAME@$REALM
-
-
-#echo --------------------------------------------------
-#echo "Setting up guest user credential: \"$GUEST_USERNAME\""
-#echo --------------------------------------------------
-#if [[ ! `grep $GUEST_USERNAME /etc/passwd` ]]; then
-#    useradd $GUEST_USERNAME
-#fi
-##echo $GUEST_PASSWORD | tee - | smbpasswd -a -s $GUEST_USERNAME
-#smbpasswd -a -s $GUEST_USERNAME -w $GUEST_PASSWORD
-
-
 
 
 
@@ -262,9 +237,8 @@ crudini --set $SAMBA_CONF global "idmap config $WORKGROUP:backend" "ad"
 crudini --set $SAMBA_CONF global "idmap config $WORKGROUP:schema_mode" "rfc2307"
 crudini --set $SAMBA_CONF global "idmap config $WORKGROUP:range" "10000-999999"
 
-
-crudini --set $SAMBA_CONF global "template homedir" "$TEMPLATE_HOMEDIR"
-crudini --set $SAMBA_CONF global "template shell" "$TEMPLATE_SHELL"
+#crudini --set $SAMBA_CONF global "template homedir" "$TEMPLATE_HOMEDIR"
+#crudini --set $SAMBA_CONF global "template shell" "$TEMPLATE_SHELL"
 crudini --set $SAMBA_CONF global "client use spnego" "$CLIENT_USE_SPNEGO"
 crudini --set $SAMBA_CONF global "client ntlmv2 auth" "$CLIENT_NTLMV2_AUTH"
 crudini --set $SAMBA_CONF global "encrypt passwords" "$ENCRYPT_PASSWORDS"
@@ -360,12 +334,11 @@ fi
 crudini --set /etc/sssd/sssd.conf sssd "config_file_version" 2 
 crudini --set /etc/sssd/sssd.conf sssd "domains" "${DOMAIN_NAME^^}"
 crudini --set /etc/sssd/sssd.conf sssd "services" nss,pam
-
 crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "ad_server" "$(echo ${ADMIN_SERVER} | sed 's#\s#,#g')"
 crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "id_provider" "ad"
 crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "auth_provider" "ad"
 crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "access_provider" "ad"
-crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "default_shell" "/bin/bash"
+crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "default_shell" "/dev/null"
 crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "fallback_homedir" "/home/%u"
 
 # cat /etc/sssd/sssd.conf
@@ -394,7 +367,7 @@ echo 'Setting Crontab'
 echo --------------------------------------------------
 echo "SHELL=/bin/sh" > /etc/crontab
 echo "PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin" >> /etc/crontab
-echo "20 * * * *	root    cd / && run-parts --report /etc/cron.hourly > /dev/stdout 2>/dev/stdout" >> /etc/crontab
+echo "20 * * * *	root	cd / && run-parts --report /etc/cron.hourly > /dev/stdout" >> /etc/crontab
 echo --------------------------------------------------
 echo 'Starting Cron'
 echo --------------------------------------------------
