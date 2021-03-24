@@ -74,6 +74,7 @@ MAX_XMIT=${MAX_XMIT:-65535}
 DEAD_TIME=${DEAD_TIME:-0}
 SHARED_DIRECTORY=${SHARED_DIRECTORY:-/usr/share/public}
 SHARE_NAME=${SHARE_NAME:-public}
+GROUP_PREFIX=${GROUP_PREFIX:-}
 
 SAMBA_CONF=/etc/samba/smb.conf
 
@@ -386,6 +387,12 @@ timeout 30s /etc/init.d/sssd status
 #fi
 
 pam-auth-update
+
+echo --------------------------------------------------
+echo 'Starting cron'
+echo --------------------------------------------------
+#/etc/init.d/cron enable
+/etc/init.d/cron start
 
 
 
