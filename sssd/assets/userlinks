@@ -1,0 +1,15 @@
+#!/bin/bash
+
+BASE_DIR=$SHARED_DIRECTORY
+PREFIX=$GROUP_PREFIX
+
+for DIR in $(ls -l $BASE_DIR | awk '{if ($4 != "root"){print $9;}}'); do
+	echo -n "CRON: Searching group "$PREFIX$DIR"..." 
+	/usr/bin/getent group $PREFIX$DIR > /dev/null && \
+	for USER in $(/usr/bin/getent group $PREFIX$DIR | awk '{split($1,users,":"); split(users[4],user,","); for (i=1;i in user;i++) {print user[i];}}'); do
+		echo "OK"
+		echo "      Adjusting "$USER" link to "$BASE_DIR"/"$DIR"..." && \
+		mkdir -p /home/$USER && chown $USER /home/$USER && \
+		cd /home/$USER && ln -s $BASE_DIR/$DIR 
+	done || echo "NOT FOUND"
+done
