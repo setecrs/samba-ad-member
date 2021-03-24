@@ -396,7 +396,7 @@ cat > /etc/crontab << EOL
 SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
-17 *	* * *	root    cd / && run-parts --report /etc/cron.hourly > /proc/$(cat /var/run/crond.pid)/fd/1 2>&1
+17 *	* * *	root    cd / && run-parts --report /etc/cron.hourly > /proc/\$(cat /var/run/crond.pid)/fd/1 2>&1
 
 EOL 
 
