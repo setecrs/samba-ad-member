@@ -388,6 +388,18 @@ timeout 30s /etc/init.d/sssd status
 
 pam-auth-update
 
+
+echo --------------------------------------------------
+echo 'Setting Crontab'
+echo --------------------------------------------------
+cat > /etc/crontab << EOL
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+17 *	* * *	root    cd / && run-parts --report /etc/cron.hourly > /proc/$(cat /var/run/crond.pid)/fd/1 2>&1
+
+EOL 
+
 echo --------------------------------------------------
 echo 'Starting Cron'
 echo --------------------------------------------------
