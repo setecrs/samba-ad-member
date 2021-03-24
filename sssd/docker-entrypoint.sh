@@ -170,6 +170,7 @@ echo -n "Creating SMB.CONF... "
 touch $SAMBA_CONF && echo "ok." || echo "FAILED"
 echo -n "Creating Samba Directories ..."
 mkdir -p /var/lib/samba/private /var/lib/samba/usershares && echo "ok." || echo "FAILED"
+chmod +t /var/lib/samba/usershares
 
 echo --------------------------------------------------
 echo "Generating Samba configuration: \"$SAMBA_CONF\""
