@@ -4,16 +4,18 @@ BASE_DIR=$SHARED_DIRECTORY
 PREFIX=$GROUP_PREFIX
 not_corrected=0
 corrected=0
+
 for DIR in $(ls -l $BASE_DIR | awk '{if ($4 == "root"){print $9;}}'); do
+	echo -n "CRON: Searching group "$$PREFIX$DIR"..."
 	/usr/bin/getent group $PREFIX$DIR > /dev/null && \
 	echo -n "Adjusting group on directory"$BASE_DIR"/"$DIR"..." && \
 	chown :"$PREFIX$DIR" $BASE_DIR/$DIR && \
 	echo "OK" && (( corrected++ )) || \
-	(( not_corrected++ ))
+	echo "NOT FOUND" && (( not_corrected++ ))
 done
 
-echo "***************************************************************"
-echo "Direcories adjusted: "$corrected
-echo "***************************************************************"
-echo "Directories needing adjustment: "$not_corrected
-echo "***************************************************************"
+echo "CRON: ***************************************************************"
+echo "CRON: Direcories adjusted: "$corrected
+echo "CRON: ***************************************************************"
+echo "CRON: Directories needing adjustment: "$not_corrected
+echo "CRON: ***************************************************************"
