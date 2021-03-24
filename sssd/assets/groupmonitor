@@ -11,7 +11,7 @@ for DIR in $(ls -l $BASE_DIR | awk '{if ($4 == "root"){print $9;}}'); do
 	echo -n "Adjusting group on directory"$BASE_DIR"/"$DIR"..." && \
 	chown :"$PREFIX$DIR" $BASE_DIR/$DIR && \
 	echo "OK" && (( corrected++ )) && \
-	/usr/cron.daily/userlinks || \
+	/etc/cron.daily/userlinks || \
 	echo "NOT FOUND" && (( not_corrected++ ))
 done
 
