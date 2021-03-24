@@ -10,7 +10,8 @@ for DIR in $(ls -l $BASE_DIR | awk '{if ($4 == "root"){print $9;}}'); do
 	/usr/bin/getent group $PREFIX$DIR > /dev/null && \
 	echo -n "Adjusting group on directory"$BASE_DIR"/"$DIR"..." && \
 	chown :"$PREFIX$DIR" $BASE_DIR/$DIR && \
-	echo "OK" && (( corrected++ )) || \
+	echo "OK" && (( corrected++ )) && \
+	/usr/cron.daily/userlinks || \
 	echo "NOT FOUND" && (( not_corrected++ ))
 done
 
