@@ -10,6 +10,6 @@ for DIR in $(ls -l $BASE_DIR | awk '{if ($4 != "root"){print $9;}}'); do
 		echo "OK"
 		echo "      Adjusting "$USER" link to "$BASE_DIR"/"$DIR"..." && \
 		mkdir -p /home/$USER && chown $USER /home/$USER && \
-		cd /home/$USER && ln -s $BASE_DIR/$DIR 
+		cd /home/$USER && ln -sf $BASE_DIR/$DIR 
 	done || echo "NOT FOUND"
 done
