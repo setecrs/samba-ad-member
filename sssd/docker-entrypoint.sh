@@ -375,7 +375,10 @@ echo 'Starting Cron'
 echo --------------------------------------------------
 /etc/init.d/cron start
 /etc/init.d/cron status
-
+echo --------------------------------------------------
+echo 'User links First RUN'
+echo --------------------------------------------------
+/etc/cron.daily/userlinks
 
 
 echo --------------------------------------------------
