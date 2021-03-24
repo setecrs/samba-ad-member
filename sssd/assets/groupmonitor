@@ -15,7 +15,7 @@ for DIR in $(ls -l $BASE_DIR | awk '{if ($4 == "root"){print $9;}}'); do
 done
 
 echo "CRON: ***************************************************************"
-echo "CRON: Direcories adjusted: "$corrected
+echo "CRON: Directories adjusted: "$corrected
 echo "CRON: ***************************************************************"
 echo "CRON: Directories needing adjustment: "$not_corrected
 echo "CRON: ***************************************************************"
