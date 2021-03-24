@@ -45,7 +45,7 @@ RUN apt-get -y update && \
 
 
 # --------------------------------------------------
-# 'Enabling sssd and Disabling Samba to enable handling by supervisord'
+# 'Enabling sssd '
 # --------------------------------------------------
 RUN systemctl enable sssd
 
@@ -58,6 +58,8 @@ RUN env --unset=DEBIAN_FRONTEND
 COPY docker-entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 COPY assets/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY assets/groupmonitor /etc/cron.hourly/groupmonitor
+RUN rm /etc/cron.daily/*
 
 EXPOSE 137 138 139 445
 
