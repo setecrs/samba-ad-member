@@ -6,7 +6,7 @@ not_corrected=0
 corrected=0
 
 for DIR in $(ls -l $BASE_DIR | awk '{if ($4 == "root"){print $9;}}'); do
-	echo -n "CRON: Searching group "$$PREFIX$DIR"..."
+	echo -n "CRON: Searching group "$PREFIX$DIR"..."
 	/usr/bin/getent group $PREFIX$DIR > /dev/null && \
 	echo -n "Adjusting group on directory"$BASE_DIR"/"$DIR"..." && \
 	chown :"$PREFIX$DIR" $BASE_DIR/$DIR && \
