@@ -1,0 +1,19 @@
+#!/bin/bash
+
+BASE_DIR=$SHARED_DIRECTORY
+PREFIX=$GROUP_PREFIX
+not_corrected=0
+corrected=0
+for DIR in $(ls -l $BASE_DIR | awk '{if ($4 == "root"){print $9;}}'); do
+	/usr/bin/getent group $PREFIX$DIR > /dev/null && \
+	echo -n "Adjusting group on directory"$BASE_DIR"/"$DIR"..." && \
+	chown :"$PREFIX$DIR" $BASE_DIR/$DIR && \
+	echo "OK" && (( corrected++ )) || \
+	(( not_corrected++ ))
+done
+
+echo "***************************************************************"
+echo "Direcories adjusted: "$corrected
+echo "***************************************************************"
+echo "Directories needing adjustment: "$not_corrected
+echo "***************************************************************"
