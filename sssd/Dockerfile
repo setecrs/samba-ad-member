@@ -11,7 +11,11 @@ ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 #        dnsutils \
 #        vim \
 #        nano \
-
+#        sssd \
+#        sssd-tools \
+#        libnss-sss \
+#        libpam-sss \
+#        adcli \
 
         
 RUN apt-get -y update && \
@@ -34,11 +38,6 @@ RUN apt-get -y update && \
         libpam-mount \
         policykit-1 \
         packagekit \
-        sssd \
-        sssd-tools \
-        libnss-sss \
-        libpam-sss \
-        adcli \
         supervisor \
    && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
