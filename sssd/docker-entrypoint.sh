@@ -39,7 +39,7 @@ WINBIND_ENUM_GROUPS=${WINBIND_ENUM_GROUPS:-yes}
 TEMPLATE_HOMEDIR=${TEMPLATE_HOMEDIR:-/home/%U}
 TEMPLATE_SHELL=${TEMPLATE_SHELL:-/dev/null}
 # now kerberos is run by samba
-DEDICATED_KEYTAB_FILE=${DEDICATED_KEYTAB_FILE:-/etc/krb5.keytab}
+DEDICATED_KEYTAB_FILE=${DEDICATED_KEYTAB_FILE:-/etc/samba/krb5.keytab}
 KERBEROS_METHOD=${KERBEROS_METHOD:-secrets and keytab}
 #
 CLIENT_USE_SPNEGO=${CLIENT_USE_SPNEGO:-yes}
@@ -328,11 +328,11 @@ echo --------------------------------------------------
 echo 'Registering to Active Directory'
 echo --------------------------------------------------
 echo -n "Registering Windows Machine ..."
-if [[ ! -f /etc/krb5.keytab ]]; then
+if [[ ! -f ${DEDICATED_KEYTAB_FILE} ]]; then
 	#echo --------------------------------------------------
 	#echo 'Generating Kerberos ticket'
 	#echo --------------------------------------------------
-	echo $AD_PASSWORD | kinit -V $AD_USERNAME@$REALM
+	# echo $AD_PASSWORD | kinit -V $AD_USERNAME@$REALM
 	net ads join -U"$AD_USERNAME"%"$AD_PASSWORD" && echo "OK." || echo "Failed."	
 else 
 	echo "Already registered. Restarting after changing configuration"
