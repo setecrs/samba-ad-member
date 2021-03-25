@@ -39,6 +39,7 @@ RUN apt-get -y update && \
         policykit-1 \
         packagekit \
         supervisor \
+        acl \
    && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 
