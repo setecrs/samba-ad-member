@@ -356,15 +356,15 @@ fi
 #timeout 30s /etc/init.d/sssd restart
 #timeout 30s /etc/init.d/sssd status
 
-#echo --------------------------------------------------
-#echo "Updating NSSwitch configuration: \"/etc/nsswitch.conf\""
-#echo --------------------------------------------------
-#if [[ ! `grep "winbind" /etc/nsswitch.conf` ]]; then
-#    sed -i "s#^\(passwd\:\s*compat\)\s*\(.*\)\$#\1 \2 winbind#" /etc/nsswitch.conf
-#    sed -i "s#^\(group\:\s*compat\)\s*\(.*\)\$#\1 \2 winbind#" /etc/nsswitch.conf
+echo --------------------------------------------------
+echo "Updating NSSwitch configuration: \"/etc/nsswitch.conf\""
+echo --------------------------------------------------
+if [[ ! `grep "winbind" /etc/nsswitch.conf` ]]; then
+    sed -i "s#^\(passwd\:\s*files\)\s*\(.*\)\$#\1 \2 winbind#" /etc/nsswitch.conf
+    sed -i "s#^\(group\:\s*files\)\s*\(.*\)\$#\1 \2 winbind#" /etc/nsswitch.conf
 #    sed -i "s#^\(shadow\:\s*compat\)\s*\(.*\)\$#\1 \2 winbind#" /etc/nsswitch.conf
-#fi
-# pam-auth-update
+fi
+pam-auth-update
 
 
 #echo --------------------------------------------------
