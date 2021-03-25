@@ -2,21 +2,9 @@ FROM debian:stable
 
 MAINTAINER Aristeu Jr <aristeu.jr@gmail.com>
 
-ENV TZ=America/Sao_Paulo
+ENV TZ=Brazil/East
 ENV DEBIAN_FRONTEND=noninteractive
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
-
-
-#        resolvconf \
-#        dnsutils \
-#        vim \
-#        nano \
-#        sssd \
-#        sssd-tools \
-#        libnss-sss \
-#        libpam-sss \
-#        adcli \
-
         
 RUN apt-get -y update && \
     apt-get -yqq --no-install-recommends install \
@@ -42,17 +30,8 @@ RUN apt-get -y update && \
         acl \
    && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-
-
-## --------------------------------------------------
-## 'Enabling sssd '
-## --------------------------------------------------
-#RUN systemctl enable sssd
-
 RUN mkdir -p /var/lib/samba/private
-
 RUN chmod 777 /home
-
 RUN env --unset=DEBIAN_FRONTEND
 
 COPY docker-entrypoint.sh /entrypoint.sh
@@ -64,7 +43,7 @@ RUN chmod 744 /etc/cron.hourly/groupmonitor
 RUN rm /etc/cron.daily/*
 COPY assets/userlinks /etc/cron.daily/userlinks
 RUN chmod 744 /etc/cron.daily/userlinks
-
+COPY assets/crontab /etc/crontab
 
 EXPOSE 137 138 139 445
 
