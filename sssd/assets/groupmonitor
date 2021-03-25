@@ -16,7 +16,7 @@ for DIR in $(ls -l $BASE_DIR | awk '{if ($4 == "root"){print $9;}}'); do
 	setfacl -m group:$PREFIX$DIR:rwx $BASE_DIR/$DIR && \
 	setfacl -m other::--- $BASE_DIR/$DIR && \
 	echo "OK" && (( corrected++ )) && \
-	/etc/cron.daily/userlinks $PREFIX$DIR || \
+	/etc/cron.daily/userlinks $DIR || \
 	echo "NOT FOUND" && (( not_corrected++ ))
 done
 
