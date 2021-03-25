@@ -56,7 +56,7 @@ OS_LEVEL=${OS_LEVEL:-0}
 WINS_SUPPORT=${WINS_SUPPORT:-no}
 WINS_SERVER=${WINS_SERVER:-127.0.0.1}
 DNS_PROXY=${DNS_PROXY:-no}
-LOG_LEVEL=${LOG_LEVEL:-1}
+LOG_LEVEL=${LOG_LEVEL:-2}
 DEBUG_TIMESTAMP=${DEBUG_TIMESTAMP:-yes}
 LOG_FILE=${LOG_FILE:-/var/log/samba/log.%m}
 MAX_LOG_SIZE=${MAX_LOG_SIZE:-1000}
@@ -176,9 +176,12 @@ echo --------------------------------------------------
 echo "Generating Samba configuration: \"$SAMBA_CONF\""
 echo --------------------------------------------------
 
-crudini --set $SAMBA_CONF global "vfs objects" "acl_xattr"
-crudini --set $SAMBA_CONF global "map acl inherit" "yes"
-crudini --set $SAMBA_CONF global "store dos attributes" "yes"
+#crudini --set $SAMBA_CONF global "vfs objects" "acl_xattr"
+#crudini --set $SAMBA_CONF global "map acl inherit" "yes"
+crudini --set $SAMBA_CONF global "store dos attributes" "no"
+crudini --set $SAMBA_CONF global "ea support" "no"
+crudini --set $SAMBA_CONF global "wide links" "no"
+crudini --set $SAMBA_CONF global "unix extensions" "no"
 # crudini --set $SAMBA_CONF global "guest account" "$GUEST_USERNAME"
 
 crudini --set $SAMBA_CONF global "netbios name" "$HOSTNAME"
