@@ -43,10 +43,10 @@ RUN apt-get -y update && \
 
 
 
-# --------------------------------------------------
-# 'Enabling sssd '
-# --------------------------------------------------
-RUN systemctl enable sssd
+## --------------------------------------------------
+## 'Enabling sssd '
+## --------------------------------------------------
+#RUN systemctl enable sssd
 
 RUN mkdir -p /var/lib/samba/private
 
