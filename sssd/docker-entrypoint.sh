@@ -180,7 +180,7 @@ echo --------------------------------------------------
 #crudini --set $SAMBA_CONF global "map acl inherit" "yes"
 crudini --set $SAMBA_CONF global "store dos attributes" "no"
 crudini --set $SAMBA_CONF global "ea support" "no"
-crudini --set $SAMBA_CONF global "wide links" "no"
+crudini --set $SAMBA_CONF global "wide links" "yes"
 crudini --set $SAMBA_CONF global "unix extensions" "no"
 # crudini --set $SAMBA_CONF global "guest account" "$GUEST_USERNAME"
 
@@ -291,6 +291,7 @@ crudini --set $SAMBA_CONF homes "printable" "no"
 crudini --set $SAMBA_CONF homes "oplocks" "yes"
 crudini --set $SAMBA_CONF homes "valid users" "%S"
 crudini --set $SAMBA_CONF homes "hide unreadable" "yes"
+crudini --set $SAMBA_CONF homes "hide dot files" "yes"
 
 # # public shared directory (unrestricted)
 # mkdir -p "/usr/share/public"
