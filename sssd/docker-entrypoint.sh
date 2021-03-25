@@ -154,8 +154,8 @@ EOL
 echo --------------------------------------------------
 echo "Adjusting hosts"
 echo --------------------------------------------------
-echo $(hostname -i)"     "$(hostname -f) $(hostname) $HOSTNAME\.$DOMAIN_NAME $HOSTNAME
-echo $(hostname -i)"     "$(hostname -f) $(hostname) $HOSTNAME\.$DOMAIN_NAME $HOSTNAME  > /etc/hosts
+echo $(hostname -i)"     "$HOSTNAME\.$DOMAIN_NAME $HOSTNAME $(hostname -f) $(hostname)   > /etc/hosts
+hostname $HOSTNAME\.$DOMAIN_NAME
 
 echo --------------------------------------------------
 echo "Creating smb environment"
@@ -269,6 +269,9 @@ crudini --set $SAMBA_CONF global "max log size" "$MAX_LOG_SIZE"
 crudini --set $SAMBA_CONF global "winbind nested groups" "no"
 crudini --set $SAMBA_CONF global "winbind refresh tickets" "yes"
 crudini --set $SAMBA_CONF global "winbind offline logon" "true"
+crudini --set $SAMBA_CONF global "winbind expand groups" "1"
+crudini --set $SAMBA_CONF global "winbind scan trusted domains" "no"
+
 
 # Kerberos
 crudini --set $SAMBA_CONF global "dedicated keytab file" "$DEDICATED_KEYTAB_FILE"
@@ -280,8 +283,8 @@ crudini --set $SAMBA_CONF homes "comment" "Home Directories"
 crudini --set $SAMBA_CONF homes "path" "%H"
 crudini --set $SAMBA_CONF homes "public" "no"
 crudini --set $SAMBA_CONF homes "guest ok" "no"
-crudini --set $SAMBA_CONF homes "read only" "no"
-crudini --set $SAMBA_CONF homes "writeable" "yes"
+crudini --set $SAMBA_CONF homes "read only" "yes"
+crudini --set $SAMBA_CONF homes "writeable" "no"
 crudini --set $SAMBA_CONF homes "create mask" "0777"
 crudini --set $SAMBA_CONF homes "directory mask" "0777"
 crudini --set $SAMBA_CONF homes "browseable" "no"
