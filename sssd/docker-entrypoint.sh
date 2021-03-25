@@ -383,11 +383,12 @@ pam-auth-update
 #echo "SHELL=/bin/sh" > /etc/crontab
 #echo "PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin" >> /etc/crontab
 #echo "20 * * * *	root	cd / && run-parts --report /etc/cron.hourly > /dev/stdout" >> /etc/crontab
-echo --------------------------------------------------
-echo 'Starting Cron'
-echo --------------------------------------------------
-/etc/init.d/cron start
-/etc/init.d/cron status
+#echo --------------------------------------------------
+#echo 'Starting Cron'
+#echo --------------------------------------------------
+#/etc/init.d/cron start
+#/etc/init.d/cron status
+
 echo --------------------------------------------------
 echo 'User links First RUN'
 echo --------------------------------------------------
