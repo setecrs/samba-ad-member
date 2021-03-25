@@ -108,54 +108,53 @@ cat > /etc/krb5.conf << EOL
     dns_lookup_realm = false
     dns_lookup_kdc = false
    
-    
-[realms]
-    ${DOMAIN_NAME^^} = {
-        kdc = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
-        admin_server = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
-        default_domain = ${DOMAIN_NAME^^}       
-    }
-    ${DOMAIN_NAME,,} = {
-        kdc = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
-        admin_server = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
-        default_domain = ${DOMAIN_NAME,,}
-    }
-    ${WORKGROUP^^} = {
-        kdc = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
-        admin_server = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
-        default_domain = ${DOMAIN_NAME^^}       
-    }
-    
-[domain_realm]
-    .${DOMAIN_NAME,,} = ${DOMAIN_NAME^^}
-    ${DOMAIN_NAME,,} = ${DOMAIN_NAME^^}
+#[realms]
+#    ${DOMAIN_NAME^^} = {
+#        kdc = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
+#        admin_server = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
+#        default_domain = ${DOMAIN_NAME^^}       
+#    }
+#    ${DOMAIN_NAME,,} = {
+#        kdc = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
+#        admin_server = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
+#        default_domain = ${DOMAIN_NAME,,}
+#    }
+#    ${WORKGROUP^^} = {
+#        kdc = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
+#        admin_server = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
+#        default_domain = ${DOMAIN_NAME^^}       
+#    }
+#    
+#[domain_realm]
+#    .${DOMAIN_NAME,,} = ${DOMAIN_NAME^^}
+#    ${DOMAIN_NAME,,} = ${DOMAIN_NAME^^}
     
 EOL
 
-echo --------------------------------------------------
-echo "Discovering domain specifications"
-echo --------------------------------------------------
-## realm discover -v ${DOMAIN_NAME,,}
-realm discover -v $(echo $ADMIN_SERVER | awk '{print $1}')
+#echo --------------------------------------------------
+#echo "Discovering domain specifications"
+#echo --------------------------------------------------
+### realm discover -v ${DOMAIN_NAME,,}
+#realm discover -v $(echo $ADMIN_SERVER | awk '{print $1}')
 
-echo --------------------------------------------------
-echo "Joining domain: \"${DOMAIN_NAME,,}\""
-echo --------------------------------------------------
-##echo $AD_PASSWORD | /usr/sbin/adcli join --verbose --domain ${DOMAIN_NAME,,} --domain-realm ${DOMAIN_NAME^^} --domain-controller $(echo ${ADMIN_SERVER,,} | awk '{print $1}') --login-type user --login-user $AD_USERNAME --stdin-password
-##echo $AD_PASSWORD | realm join -v ${DOMAIN_NAME,,} --user=$AD_USERNAME
-printf $AD_PASSWORD | realm join -v $(echo ${ADMIN_SERVER,,} | awk '{print $1}') --user=$AD_USERNAME
-##echo $AD_PASSWORD | realm join --user="${DOMAIN_NAME^^}\\$AD_USERNAME" $(echo $ADMIN_SERVER | awk '{print $1}')
+#echo --------------------------------------------------
+#echo "Joining domain: \"${DOMAIN_NAME,,}\""
+#echo --------------------------------------------------
+###echo $AD_PASSWORD | /usr/sbin/adcli join --verbose --domain ${DOMAIN_NAME,,} --domain-realm ${DOMAIN_NAME^^} --domain-controller $(echo ${ADMIN_SERVER,,} | awk '{print $1}') --login-type user --login-user $AD_USERNAME --stdin-password
+###echo $AD_PASSWORD | realm join -v ${DOMAIN_NAME,,} --user=$AD_USERNAME
+#printf $AD_PASSWORD | realm join -v $(echo ${ADMIN_SERVER,,} | awk '{print $1}') --user=$AD_USERNAME
+###echo $AD_PASSWORD | realm join --user="${DOMAIN_NAME^^}\\$AD_USERNAME" $(echo $ADMIN_SERVER | awk '{print $1}')
 
-echo --------------------------------------------------
-echo 'Generating Kerberos ticket'
-echo --------------------------------------------------
-echo $AD_PASSWORD | kinit -V $AD_USERNAME@$REALM
+#echo --------------------------------------------------
+#echo 'Generating Kerberos ticket'
+#echo --------------------------------------------------
+#echo $AD_PASSWORD | kinit -V $AD_USERNAME@$REALM
 
 
-echo --------------------------------------------------
-echo "Activating home directory auto-creation"
-echo --------------------------------------------------
-echo "session required pam_mkhomedir.so skel=/etc/skel/ umask=0022" | tee -a /etc/pam.d/common-session
+#echo --------------------------------------------------
+#echo "Activating home directory auto-creation"
+#echo --------------------------------------------------
+#echo "session required pam_mkhomedir.so skel=/etc/skel/ umask=0022" | tee -a /etc/pam.d/common-session
 
 
 echo --------------------------------------------------
@@ -327,7 +326,7 @@ echo --------------------------------------------------
 echo 'Registering to Active Directory'
 echo --------------------------------------------------
 echo -n "Registering Windows Machine ..."
-if [[ ! -f /etc/samba/krb5.keytab ]]; then
+if [[ ! -f /etc/krb5.keytab ]]; then
 	net ads join -U"$AD_USERNAME"%"$AD_PASSWORD" && echo "OK." || echo "Failed."	
 else 
 	echo "Already registered."
@@ -338,24 +337,24 @@ fi
 
 # Restrict Domain controllers to join as per ADMIN_SERVER environment variable
 
-crudini --set /etc/sssd/sssd.conf sssd "config_file_version" 2 
-crudini --set /etc/sssd/sssd.conf sssd "domains" "${DOMAIN_NAME^^}"
-crudini --set /etc/sssd/sssd.conf sssd "services" nss,pam
-crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "ad_server" "$(echo ${ADMIN_SERVER} | sed 's#\s#,#g')"
-crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "id_provider" "ad"
-crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "auth_provider" "ad"
-crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "access_provider" "ad"
-crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "default_shell" "/dev/null"
-crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "fallback_homedir" "/home/%u"
+#crudini --set /etc/sssd/sssd.conf sssd "config_file_version" 2 
+#crudini --set /etc/sssd/sssd.conf sssd "domains" "${DOMAIN_NAME^^}"
+#crudini --set /etc/sssd/sssd.conf sssd "services" nss,pam
+#crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "ad_server" "$(echo ${ADMIN_SERVER} | sed 's#\s#,#g')"
+#crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "id_provider" "ad"
+#crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "auth_provider" "ad"
+#crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "access_provider" "ad"
+#crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "default_shell" "/dev/null"
+#crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "fallback_homedir" "/home/%u"
 
-# cat /etc/sssd/sssd.conf
-chmod 0600 /etc/sssd/sssd.conf
+## cat /etc/sssd/sssd.conf
+#chmod 0600 /etc/sssd/sssd.conf
 
-echo --------------------------------------------------
-echo "Starting: \"sssd\""
-echo --------------------------------------------------
-timeout 30s /etc/init.d/sssd restart
-timeout 30s /etc/init.d/sssd status
+#echo --------------------------------------------------
+#echo "Starting: \"sssd\""
+#echo --------------------------------------------------
+#timeout 30s /etc/init.d/sssd restart
+#timeout 30s /etc/init.d/sssd status
 
 #echo --------------------------------------------------
 #echo "Updating NSSwitch configuration: \"/etc/nsswitch.conf\""
@@ -365,8 +364,7 @@ timeout 30s /etc/init.d/sssd status
 #    sed -i "s#^\(group\:\s*compat\)\s*\(.*\)\$#\1 \2 winbind#" /etc/nsswitch.conf
 #    sed -i "s#^\(shadow\:\s*compat\)\s*\(.*\)\$#\1 \2 winbind#" /etc/nsswitch.conf
 #fi
-
-pam-auth-update
+# pam-auth-update
 
 
 #echo --------------------------------------------------
@@ -392,7 +390,6 @@ echo --------------------------------------------------
 /etc/init.d/winbind stop
 /etc/init.d/nmbd stop
 /etc/init.d/smbd stop
-
 
 
 exec "$@"
