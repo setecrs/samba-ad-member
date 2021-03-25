@@ -328,10 +328,11 @@ echo -n "Registering Windows Machine ..."
 if [[ ! -f /var/lib/samba/private/krb5.keytab ]]; then
 	net ads join -U"$AD_USERNAME"%"$AD_PASSWORD" && echo "OK." || echo "Failed."	
 else 
-	echo "Already registered. Restarting"
+	echo "Already registered. Restarting after changing configuration"
 	/etc/init.d/smbd restart
 	/etc/init.d/nmbd restart
 	/etc/init.d/winbind restart
+	sleep 5
 	echo "----------------------------------------------"
 	echo "Verificando Status"
 	echo "----------------------------------------------"
