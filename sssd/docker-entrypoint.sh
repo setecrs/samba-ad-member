@@ -87,10 +87,10 @@ echo $TZ | tee /etc/timezone
 dpkg-reconfigure --frontend noninteractive tzdata
 
 
-echo --------------------------------------------------
-echo " Starting system message bus"
-echo --------------------------------------------------
-/etc/init.d/dbus start
+#echo --------------------------------------------------
+#echo " Starting system message bus"
+#echo --------------------------------------------------
+#/etc/init.d/dbus start
 
 
 
@@ -106,7 +106,7 @@ cat > /etc/krb5.conf << EOL
 [libdefaults]
     default_realm = ${DOMAIN_NAME^^}
     dns_lookup_realm = false
-    dns_lookup_kdc = true
+    dns_lookup_kdc = false
    
 #[realms]
 #    ${DOMAIN_NAME^^} = {
