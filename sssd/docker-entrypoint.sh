@@ -293,6 +293,8 @@ crudini --set $SAMBA_CONF homes "oplocks" "yes"
 crudini --set $SAMBA_CONF homes "valid users" "%S"
 crudini --set $SAMBA_CONF homes "hide unreadable" "yes"
 crudini --set $SAMBA_CONF homes "hide dot files" "yes"
+crudini --set $SAMBA_CONF homes "inherit acls" "yes"
+crudini --set $SAMBA_CONF homes "acl allow execute always" "yes"
 
 # # public shared directory (unrestricted)
 # mkdir -p "/usr/share/public"
