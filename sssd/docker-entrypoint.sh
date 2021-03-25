@@ -39,7 +39,7 @@ WINBIND_ENUM_GROUPS=${WINBIND_ENUM_GROUPS:-yes}
 TEMPLATE_HOMEDIR=${TEMPLATE_HOMEDIR:-/home/%U}
 TEMPLATE_SHELL=${TEMPLATE_SHELL:-/dev/null}
 # now kerberos is run by samba
-DEDICATED_KEYTAB_FILE=${DEDICATED_KEYTAB_FILE:-/var/lib/samba/private/krb5.keytab}
+DEDICATED_KEYTAB_FILE=${DEDICATED_KEYTAB_FILE:-/etc/krb5.keytab}
 KERBEROS_METHOD=${KERBEROS_METHOD:-secrets and keytab}
 #
 CLIENT_USE_SPNEGO=${CLIENT_USE_SPNEGO:-yes}
@@ -98,36 +98,36 @@ echo --------------------------------------------------
 echo "Setting up Kerberos realm: \"${DOMAIN_NAME^^}\""
 echo --------------------------------------------------
 cat > /etc/krb5.conf << EOL
-#[logging]
-#    default = FILE:/var/log/krb5.log 
-#    kdc = FILE:/var/log/kdc.log 
-#    admin_server = FILE:/var/log/kadmind.log
+[logging]
+    default = FILE:/var/log/krb5.log 
+    kdc = FILE:/var/log/kdc.log 
+    admin_server = FILE:/var/log/kadmind.log
 
 [libdefaults]
     default_realm = ${DOMAIN_NAME^^}
     dns_lookup_realm = false
     dns_lookup_kdc = true
    
-#[realms]
-#    ${DOMAIN_NAME^^} = {
-#        kdc = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
-#        admin_server = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
-#        default_domain = ${DOMAIN_NAME^^}       
-#    }
-#    ${DOMAIN_NAME,,} = {
-#        kdc = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
-#        admin_server = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
-#        default_domain = ${DOMAIN_NAME,,}
-#    }
-#    ${WORKGROUP^^} = {
-#        kdc = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
-#        admin_server = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
-#        default_domain = ${DOMAIN_NAME^^}       
-#    }
-#    
-#[domain_realm]
-#    .${DOMAIN_NAME,,} = ${DOMAIN_NAME^^}
-#    ${DOMAIN_NAME,,} = ${DOMAIN_NAME^^}
+[realms]
+    ${DOMAIN_NAME^^} = {
+        kdc = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
+        admin_server = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
+        default_domain = ${DOMAIN_NAME^^}       
+    }
+    ${DOMAIN_NAME,,} = {
+        kdc = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
+        admin_server = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
+        default_domain = ${DOMAIN_NAME,,}
+    }
+    ${WORKGROUP^^} = {
+        kdc = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
+        admin_server = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
+        default_domain = ${DOMAIN_NAME^^}       
+    }
+    
+[domain_realm]
+    .${DOMAIN_NAME,,} = ${DOMAIN_NAME^^}
+    ${DOMAIN_NAME,,} = ${DOMAIN_NAME^^}
     
 EOL
 
@@ -145,17 +145,17 @@ EOL
 #printf $AD_PASSWORD | realm join -v $(echo ${ADMIN_SERVER,,} | awk '{print $1}') --user=$AD_USERNAME
 ###echo $AD_PASSWORD | realm join --user="${DOMAIN_NAME^^}\\$AD_USERNAME" $(echo $ADMIN_SERVER | awk '{print $1}')
 
-#echo --------------------------------------------------
-#echo 'Generating Kerberos ticket'
-#echo --------------------------------------------------
-#echo $AD_PASSWORD | kinit -V $AD_USERNAME@$REALM
-
 
 #echo --------------------------------------------------
 #echo "Activating home directory auto-creation"
 #echo --------------------------------------------------
 #echo "session required pam_mkhomedir.so skel=/etc/skel/ umask=0022" | tee -a /etc/pam.d/common-session
 
+echo --------------------------------------------------
+echo "Adjusting hosts"
+echo --------------------------------------------------
+echo $(hostname -i)"     "$(hostname -f) $(hostname) $HOSTNAME\.$DOMAIN_NAME $HOSTNAME
+echo $(hostname -i)"     "$(hostname -f) $(hostname) $HOSTNAME\.$DOMAIN_NAME $HOSTNAME  > /etc/hosts
 
 echo --------------------------------------------------
 echo "Creating smb environment"
@@ -325,7 +325,11 @@ echo --------------------------------------------------
 echo 'Registering to Active Directory'
 echo --------------------------------------------------
 echo -n "Registering Windows Machine ..."
-if [[ ! -f /var/lib/samba/private/krb5.keytab ]]; then
+if [[ ! -f /etc/krb5.keytab ]]; then
+	#echo --------------------------------------------------
+	#echo 'Generating Kerberos ticket'
+	#echo --------------------------------------------------
+	echo $AD_PASSWORD | kinit -V $AD_USERNAME@$REALM
 	net ads join -U"$AD_USERNAME"%"$AD_PASSWORD" && echo "OK." || echo "Failed."	
 else 
 	echo "Already registered. Restarting after changing configuration"
