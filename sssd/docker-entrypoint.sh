@@ -39,7 +39,7 @@ WINBIND_ENUM_GROUPS=${WINBIND_ENUM_GROUPS:-yes}
 TEMPLATE_HOMEDIR=${TEMPLATE_HOMEDIR:-/home/%U}
 TEMPLATE_SHELL=${TEMPLATE_SHELL:-/dev/null}
 # now kerberos is run by samba
-DEDICATED_KEYTAB_FILE=${DEDICATED_KEYTAB_FILE:-/var/lib/samba/private/krb5.keytab}
+DEDICATED_KEYTAB_FILE=${DEDICATED_KEYTAB_FILE:-/etc/krb5.keytab}
 KERBEROS_METHOD=${KERBEROS_METHOD:-secrets and keytab}
 #
 CLIENT_USE_SPNEGO=${CLIENT_USE_SPNEGO:-yes}
@@ -107,8 +107,7 @@ cat > /etc/krb5.conf << EOL
     default_realm = ${DOMAIN_NAME^^}
     dns_lookup_realm = false
     dns_lookup_kdc = false
-    default_keytab_name = ${DEDICATED_KEYTAB_FILE}
-   
+       
 #[realms]
 #    ${DOMAIN_NAME^^} = {
 #        kdc = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
@@ -383,16 +382,11 @@ pam-auth-update
 #echo "SHELL=/bin/sh" > /etc/crontab
 #echo "PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin" >> /etc/crontab
 #echo "20 * * * *	root	cd / && run-parts --report /etc/cron.hourly > /dev/stdout" >> /etc/crontab
-#echo --------------------------------------------------
-#echo 'Starting Cron'
-#echo --------------------------------------------------
-#/etc/init.d/cron start
-#/etc/init.d/cron status
-
 echo --------------------------------------------------
-echo 'User links First RUN'
+echo 'Starting Cron'
 echo --------------------------------------------------
-/etc/cron.daily/userlinks
+/etc/init.d/cron start
+/etc/init.d/cron status
 
 
 echo --------------------------------------------------
