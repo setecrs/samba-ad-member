@@ -378,18 +378,6 @@ fi
 pam-auth-update
 
 
-#echo --------------------------------------------------
-#echo 'Setting Crontab'
-#echo --------------------------------------------------
-#echo "SHELL=/bin/sh" > /etc/crontab
-#echo "PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin" >> /etc/crontab
-#echo "20 * * * *	root	cd / && run-parts --report /etc/cron.hourly > /dev/stdout" >> /etc/crontab
-echo --------------------------------------------------
-echo 'Starting Cron'
-echo --------------------------------------------------
-/etc/init.d/cron start
-/etc/init.d/cron status
-
 
 echo --------------------------------------------------
 echo 'Stopping Samba to enable handling by supervisord'
