@@ -56,7 +56,7 @@ OS_LEVEL=${OS_LEVEL:-0}
 WINS_SUPPORT=${WINS_SUPPORT:-no}
 WINS_SERVER=${WINS_SERVER:-127.0.0.1}
 DNS_PROXY=${DNS_PROXY:-no}
-LOG_LEVEL=${LOG_LEVEL:-2}
+LOG_LEVEL=${LOG_LEVEL:-3}
 DEBUG_TIMESTAMP=${DEBUG_TIMESTAMP:-yes}
 LOG_FILE=${LOG_FILE:-/var/log/samba/log.%m}
 MAX_LOG_SIZE=${MAX_LOG_SIZE:-1000}
@@ -98,15 +98,15 @@ echo --------------------------------------------------
 echo "Setting up Kerberos realm: \"${DOMAIN_NAME^^}\""
 echo --------------------------------------------------
 cat > /etc/krb5.conf << EOL
-[logging]
-    default = FILE:/var/log/krb5.log 
-    kdc = FILE:/var/log/kdc.log 
-    admin_server = FILE:/var/log/kadmind.log
+#[logging]
+#    default = FILE:/var/log/krb5.log 
+#    kdc = FILE:/var/log/kdc.log 
+#    admin_server = FILE:/var/log/kadmind.log
 
 [libdefaults]
     default_realm = ${DOMAIN_NAME^^}
     dns_lookup_realm = false
-    dns_lookup_kdc = false
+    dns_lookup_kdc = true
    
 #[realms]
 #    ${DOMAIN_NAME^^} = {
