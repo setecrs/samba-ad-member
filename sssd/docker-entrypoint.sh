@@ -238,9 +238,8 @@ crudini --set $SAMBA_CONF global "winbind enum groups" "$WINBIND_ENUM_GROUPS"
 
 crudini --set $SAMBA_CONF global "idmap config * : backend" "tdb"
 crudini --set $SAMBA_CONF global "idmap config * : range" "2000-3999"
-crudini --set $SAMBA_CONF global "idmap config $WORKGROUP:backend" "ad"
-crudini --set $SAMBA_CONF global "idmap config $WORKGROUP:schema_mode" "rfc2307"
-crudini --set $SAMBA_CONF global "idmap config $WORKGROUP:range" "10000-999999"
+crudini --set $SAMBA_CONF global "idmap config $WORKGROUP : backend" "rid"
+crudini --set $SAMBA_CONF global "idmap config $WORKGROUP : range" "10000-999999"
 
 crudini --set $SAMBA_CONF global "template homedir" "$TEMPLATE_HOMEDIR"
 crudini --set $SAMBA_CONF global "template shell" "$TEMPLATE_SHELL"
