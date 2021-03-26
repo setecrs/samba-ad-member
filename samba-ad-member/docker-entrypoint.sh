@@ -377,7 +377,9 @@ if [[ ! `grep "winbind" /etc/nsswitch.conf` ]]; then
 fi
 pam-auth-update
 
-
+# adjusting environment for cron
+printenv | grep -E "^SHARED_DIRECTORY" >> /etc/environment
+printenv | grep -E "^GROUP_PREFIX" >> /etc/environment
 
 echo --------------------------------------------------
 echo 'Stopping Samba to enable handling by supervisord'
