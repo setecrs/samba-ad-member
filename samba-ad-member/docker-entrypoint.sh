@@ -21,11 +21,8 @@ DNS_SERVER=${DNS_SERVER:-}
 ADMIN_SERVER=${ADMIN_SERVER:-${DOMAIN_NAME,,}}
 KDC_SERVER=${KDC_SERVER:-$(echo ${ADMIN_SERVER,,} | awk '{print $1}')}
 PASSWORD_SERVER=${PASSWORD_SERVER:-${ADMIN_SERVER,,}}
-
 ENCRYPTION_TYPES=${ENCRYPTION_TYPES:-rc4-hmac des3-hmac-sha1 des-cbc-crc arcfour-hmac aes256-cts-hmac-sha1-96 aes128-cts-hmac-sha1-96 des-cbc-md5}
-
 NAME_RESOLVE_ORDER=${NAME_RESOLVE_ORDER:-host bcast}
-
 SERVER_STRING=${SERVER_STRING:-Samba Server Version %v}
 SECURITY=${SECURITY:-ads}
 REALM=${REALM:-${DOMAIN_NAME^^}}
@@ -38,10 +35,8 @@ WINBIND_ENUM_USERS=${WINBIND_ENUM_USERS:-yes}
 WINBIND_ENUM_GROUPS=${WINBIND_ENUM_GROUPS:-yes}
 TEMPLATE_HOMEDIR=${TEMPLATE_HOMEDIR:-/home/%U}
 TEMPLATE_SHELL=${TEMPLATE_SHELL:-/dev/null}
-# now kerberos is run by samba
 DEDICATED_KEYTAB_FILE=${DEDICATED_KEYTAB_FILE:-/etc/krb5.keytab}
 KERBEROS_METHOD=${KERBEROS_METHOD:-secrets and keytab}
-#
 CLIENT_USE_SPNEGO=${CLIENT_USE_SPNEGO:-yes}
 CLIENT_NTLMV2_AUTH=${CLIENT_NTLMV2_AUTH:-yes}
 ENCRYPT_PASSWORDS=${ENCRYPT_PASSWORDS:-yes}
@@ -60,8 +55,6 @@ LOG_LEVEL=${LOG_LEVEL:-3}
 DEBUG_TIMESTAMP=${DEBUG_TIMESTAMP:-yes}
 LOG_FILE=${LOG_FILE:-/var/log/samba/log.%m}
 MAX_LOG_SIZE=${MAX_LOG_SIZE:-1000}
-#Deprecated: SYSLOG_ONLY=${SYSLOG_ONLY:-no}
-#Deprecated: SYSLOG=${SYSLOG:-0}
 PANIC_ACTION=${PANIC_ACTION:-/usr/share/samba/panic-action %d}
 HOSTS_ALLOW=${HOSTS_ALLOW:-192.168.0.0/16 172.16.0.0/20 10.0.0.0/8}
 SOCKET_OPTIONS=${SOCKET_OPTIONS:-TCP_NODELAY SO_KEEPALIVE IPTOS_LOWDELAY}
@@ -75,24 +68,13 @@ DEAD_TIME=${DEAD_TIME:-0}
 SHARED_DIRECTORY=${SHARED_DIRECTORY:-/usr/share/public}
 SHARE_NAME=${SHARE_NAME:-public}
 GROUP_PREFIX=${GROUP_PREFIX:-}
-
 SAMBA_CONF=/etc/samba/smb.conf
-
-
 
 echo --------------------------------------------------
 echo "Setting Timezone configuration"
 echo --------------------------------------------------
 echo $TZ | tee /etc/timezone
 dpkg-reconfigure --frontend noninteractive tzdata
-
-
-#echo --------------------------------------------------
-#echo " Starting system message bus"
-#echo --------------------------------------------------
-#/etc/init.d/dbus start
-
-
 
 echo --------------------------------------------------
 echo "Setting up Kerberos realm: \"${DOMAIN_NAME^^}\""
@@ -107,49 +89,9 @@ cat > /etc/krb5.conf << EOL
     default_realm = ${DOMAIN_NAME^^}
     dns_lookup_realm = false
     dns_lookup_kdc = false
-       
-#[realms]
-#    ${DOMAIN_NAME^^} = {
-#        kdc = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
-#        admin_server = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
-#        default_domain = ${DOMAIN_NAME^^}       
-#    }
-#    ${DOMAIN_NAME,,} = {
-#        kdc = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
-#        admin_server = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
-#        default_domain = ${DOMAIN_NAME,,}
-#    }
-#    ${WORKGROUP^^} = {
-#        kdc = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
-#        admin_server = $(echo ${ADMIN_SERVER,,} | awk '{print $1}')
-#        default_domain = ${DOMAIN_NAME^^}       
-#    }
-#    
-#[domain_realm]
-#    .${DOMAIN_NAME,,} = ${DOMAIN_NAME^^}
-#    ${DOMAIN_NAME,,} = ${DOMAIN_NAME^^}
+   
     
 EOL
-
-#echo --------------------------------------------------
-#echo "Discovering domain specifications"
-#echo --------------------------------------------------
-### realm discover -v ${DOMAIN_NAME,,}
-#realm discover -v $(echo $ADMIN_SERVER | awk '{print $1}')
-
-#echo --------------------------------------------------
-#echo "Joining domain: \"${DOMAIN_NAME,,}\""
-#echo --------------------------------------------------
-###echo $AD_PASSWORD | /usr/sbin/adcli join --verbose --domain ${DOMAIN_NAME,,} --domain-realm ${DOMAIN_NAME^^} --domain-controller $(echo ${ADMIN_SERVER,,} | awk '{print $1}') --login-type user --login-user $AD_USERNAME --stdin-password
-###echo $AD_PASSWORD | realm join -v ${DOMAIN_NAME,,} --user=$AD_USERNAME
-#printf $AD_PASSWORD | realm join -v $(echo ${ADMIN_SERVER,,} | awk '{print $1}') --user=$AD_USERNAME
-###echo $AD_PASSWORD | realm join --user="${DOMAIN_NAME^^}\\$AD_USERNAME" $(echo $ADMIN_SERVER | awk '{print $1}')
-
-
-#echo --------------------------------------------------
-#echo "Activating home directory auto-creation"
-#echo --------------------------------------------------
-#echo "session required pam_mkhomedir.so skel=/etc/skel/ umask=0022" | tee -a /etc/pam.d/common-session
 
 echo --------------------------------------------------
 echo "Adjusting hosts"
@@ -378,8 +320,8 @@ fi
 pam-auth-update
 
 # adjusting environment for cron
-sed -i '1i$(printenv | grep -E "^SHARED_DIRECTORY")' /etc/crontab
-sed -i '1i$(printenv | grep -E "^GROUP_PREFIX")' /etc/crontab
+sed -i 1i"$(printenv | grep -E "^SHARED_DIRECTORY")" /etc/crontab
+sed -i 1i"$(printenv | grep -E "^GROUP_PREFIX")" /etc/crontab
 
 
 echo --------------------------------------------------
