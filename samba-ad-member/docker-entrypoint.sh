@@ -4,11 +4,7 @@
 # * https://wiki.samba.org/index.php/Troubleshooting_Samba_Domain_Members
 # * http://www.oreilly.com/openbook/samba/book/ch04_08.html
 #
-# https://wiki.samba.org/index.php/Setting_up_Samba_as_a_Domain_Member
-
-# GUEST_USERNAME=${GUEST_USERNAME:-ftp}
-# GUEST_PASSWORD=${GUEST_PASSWORD:-V3ry1nS3cur3P4ss0rd}
-
+# * https://wiki.samba.org/index.php/Setting_up_Samba_as_a_Domain_Member
 
 # Update loopback entry
 TZ=${TZ:-Etc/UTC}
@@ -73,7 +69,7 @@ SAMBA_CONF=/etc/samba/smb.conf
 echo --------------------------------------------------
 echo "Setting Timezone configuration"
 echo --------------------------------------------------
-echo $TZ | tee /etc/timezone
+ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime
 dpkg-reconfigure --frontend noninteractive tzdata
 
 echo --------------------------------------------------
@@ -237,20 +233,6 @@ crudini --set $SAMBA_CONF homes "hide unreadable" "yes"
 crudini --set $SAMBA_CONF homes "hide dot files" "yes"
 crudini --set $SAMBA_CONF homes "inherit acls" "yes"
 crudini --set $SAMBA_CONF homes "acl allow execute always" "yes"
-
-# # public shared directory (unrestricted)
-# mkdir -p "/usr/share/public"
-# crudini --set $SAMBA_CONF public "comment" "Public Directories"
-# crudini --set $SAMBA_CONF public "path" "/usr/share/public/"
-# crudini --set $SAMBA_CONF public "public" "yes"
-# crudini --set $SAMBA_CONF public "guest ok" "no"
-# crudini --set $SAMBA_CONF public "read only" "no"
-# crudini --set $SAMBA_CONF public "writeable" "yes"
-# crudini --set $SAMBA_CONF public "create mask" "0774"
-# crudini --set $SAMBA_CONF public "directory mask" "0774"
-# crudini --set $SAMBA_CONF public "browseable" "yes"
-# crudini --set $SAMBA_CONF public "printable" "no"
-# crudini --set $SAMBA_CONF public "oplocks" "yes"
 
 # private shared directory (restricted) - $SHARED_DIRECTORY ex: /tmp
 #mkdir -p "$SHARED_DIRECTORY"
