@@ -1,5 +1,7 @@
 #!/bin/bash
 
+BASE_DIR=$SHARED_DIRECTORY
+PREFIX=$GROUP_PREFIX
 
 if [ -z $1 ]; then
 
