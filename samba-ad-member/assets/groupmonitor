@@ -1,7 +1,5 @@
 #!/bin/bash
 
-BASE_DIR=$SHARED_DIRECTORY
-PREFIX=$GROUP_PREFIX
 not_corrected=0
 corrected=0
 
