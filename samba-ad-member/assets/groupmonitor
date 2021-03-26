@@ -7,17 +7,27 @@ corrected=0
 
 for DIR in $(ls -l $BASE_DIR | awk '{if ($4 == "root"){print $9;}}'); do
 	echo -n "CRON: Searching group "$PREFIX$DIR"..."
-	/usr/bin/getent group $PREFIX$DIR > /dev/null && echo "OK" && \
-	echo -n "   Adjusting group on directory "$BASE_DIR"/"$DIR"..." && \
-	chmod 0070 $BASE_DIR/$DIR && \
-	chown :"$PREFIX$DIR" $BASE_DIR/$DIR && \
-	setfacl -m group::--- $BASE_DIR/$DIR && \
-	setfacl -m default:group:$PREFIX$DIR:rwx $BASE_DIR/$DIR && \
-	setfacl -m group:$PREFIX$DIR:rwx $BASE_DIR/$DIR && \
-	setfacl -m other::--- $BASE_DIR/$DIR && \
-	echo "OK" && (( corrected++ )) && \
-	/etc/cron.daily/userlinks $DIR || \
-	echo "NOT FOUND" && (( not_corrected++ ))
+
+	if /usr/bin/getent group $PREFIX$DIR > /dev/null; then 
+		echo "OK" && \
+		echo -n "CRON      Adjusting group on directory "$BASE_DIR"/"$DIR"..." && \
+		chmod 0070 $BASE_DIR/$DIR && \
+		chown :"$PREFIX$DIR" $BASE_DIR/$DIR && \
+		setfacl -m group::--- $BASE_DIR/$DIR && \
+		setfacl -m default:group:$PREFIX$DIR:rwx $BASE_DIR/$DIR && \
+		setfacl -m group:$PREFIX$DIR:rwx $BASE_DIR/$DIR && \
+		setfacl -m other::--- $BASE_DIR/$DIR && \
+		echo "OK" || echo "FAIL"
+
+		(( corrected++ )) 
+		/etc/cron.daily/userlinks $DIR
+
+	else
+
+		echo "NOT FOUND"
+	       	(( not_corrected++ )) 
+
+	fi
 done
 
 echo "CRON: ***************************************************************"
