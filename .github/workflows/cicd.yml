@@ -6,7 +6,7 @@ on: [push]
 jobs:
   build:    
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/master'
+    if: startsWith(github.ref, 'refs/tags/') # || github.ref == 'refs/heads/master'
     steps:
     - uses: actions/checkout@v2
       
@@ -17,7 +17,7 @@ jobs:
       run: docker pull setecrs/samba-ad-member || echo could not pull  
       
     - name: Docker build latest
-      working-directory: sssd
+      working-directory: samba-ad-member
       run: docker build --cache-from setecrs/samba-ad-member:latest . -t setecrs/samba-ad-member:latest
       
     - name: Docker push latest (if master)
