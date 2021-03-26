@@ -378,8 +378,9 @@ fi
 pam-auth-update
 
 # adjusting environment for cron
-printenv | grep -E "^SHARED_DIRECTORY" >> /etc/environment
-printenv | grep -E "^GROUP_PREFIX" >> /etc/environment
+sed -i '1i$(printenv | grep -E "^SHARED_DIRECTORY")' /etc/crontab
+sed -i '1i$(printenv | grep -E "^GROUP_PREFIX")' /etc/crontab
+
 
 echo --------------------------------------------------
 echo 'Stopping Samba to enable handling by supervisord'
