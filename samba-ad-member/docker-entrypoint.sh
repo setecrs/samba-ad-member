@@ -175,9 +175,9 @@ crudini --set $SAMBA_CONF global "winbind enum users" "$WINBIND_ENUM_USERS"
 crudini --set $SAMBA_CONF global "winbind enum groups" "$WINBIND_ENUM_GROUPS"
 
 crudini --set $SAMBA_CONF global "idmap config * : backend" "tdb"
-crudini --set $SAMBA_CONF global "idmap config * : range" "2000-3999"
+crudini --set $SAMBA_CONF global "idmap config * : range" "5000-80000"
 crudini --set $SAMBA_CONF global "idmap config $WORKGROUP : backend" "rid"
-crudini --set $SAMBA_CONF global "idmap config $WORKGROUP : range" "10000-999999"
+crudini --set $SAMBA_CONF global "idmap config $WORKGROUP : range" "100000-9999999"
 
 crudini --set $SAMBA_CONF global "template homedir" "$TEMPLATE_HOMEDIR"
 crudini --set $SAMBA_CONF global "template shell" "$TEMPLATE_SHELL"
@@ -268,36 +268,13 @@ else
 	wbinfo --online-status
 fi
 
-
-
-# Restrict Domain controllers to join as per ADMIN_SERVER environment variable
-
-#crudini --set /etc/sssd/sssd.conf sssd "config_file_version" 2 
-#crudini --set /etc/sssd/sssd.conf sssd "domains" "${DOMAIN_NAME^^}"
-#crudini --set /etc/sssd/sssd.conf sssd "services" nss,pam
-#crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "ad_server" "$(echo ${ADMIN_SERVER} | sed 's#\s#,#g')"
-#crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "id_provider" "ad"
-#crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "auth_provider" "ad"
-#crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "access_provider" "ad"
-#crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "default_shell" "/dev/null"
-#crudini --set /etc/sssd/sssd.conf "domain/${DOMAIN_NAME^^}" "fallback_homedir" "/home/%u"
-
-## cat /etc/sssd/sssd.conf
-#chmod 0600 /etc/sssd/sssd.conf
-
-#echo --------------------------------------------------
-#echo "Starting: \"sssd\""
-#echo --------------------------------------------------
-#timeout 30s /etc/init.d/sssd restart
-#timeout 30s /etc/init.d/sssd status
-
 echo --------------------------------------------------
 echo "Updating NSSwitch configuration: \"/etc/nsswitch.conf\""
 echo --------------------------------------------------
 if [[ ! `grep "winbind" /etc/nsswitch.conf` ]]; then
     sed -i "s#^\(passwd\:\s*files\)\s*\(.*\)\$#\1 \2 winbind#" /etc/nsswitch.conf
     sed -i "s#^\(group\:\s*files\)\s*\(.*\)\$#\1 \2 winbind#" /etc/nsswitch.conf
-#    sed -i "s#^\(shadow\:\s*compat\)\s*\(.*\)\$#\1 \2 winbind#" /etc/nsswitch.conf
+
 fi
 pam-auth-update
 
