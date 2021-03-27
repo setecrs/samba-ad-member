@@ -16,6 +16,7 @@ for DIR in $(ls $BASE_DIR); do
 			echo "OK" 				
 			echo -n "CRON      Adjusting group on directory "$BASE_DIR"/"$DIR"..."
 			if ( chmod 0070 $BASE_DIR/$DIR && \
+			     setfacl -b $BASE_DIR/$DIR && \
 		     	     setfacl -m group::--- $BASE_DIR/$DIR && \
 		     	     setfacl -m default:group:$PREFIX$DIR:rwx $BASE_DIR/$DIR && \
 		     	     setfacl -m group:$PREFIX$DIR:rwx $BASE_DIR/$DIR && \
