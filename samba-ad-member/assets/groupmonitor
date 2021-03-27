@@ -8,13 +8,12 @@ dontneed=0
 
 #for DIR in $(ls -l $BASE_DIR | awk '{if ($4 == "root"){print $9;}}'); do
 for DIR in $(ls $BASE_DIR); do
-	echo -n "CRON: Checking group "$PREFIX$DIR"..."
-
-	if /usr/bin/getent group $PREFIX$DIR > /dev/null; then 
-		echo "OK" 		
-		if (cd $BASE_DIR && getfacl $DIR | grep -i $PREFIX$DIR >/dev/null 2>&1 ); then
-			(( dontneed++ ))
-		else
+	if (cd $BASE_DIR && getfacl $DIR | grep -i $PREFIX$DIR >/dev/null 2>&1 ); then
+		(( dontneed++ ))
+	else		
+		echo -n "CRON: Directory "$DIR" not setted. Checking group "$PREFIX$DIR" existence..."
+		if /usr/bin/getent group $PREFIX$DIR > /dev/null; then 
+			echo "OK" 				
 			echo -n "CRON      Adjusting group on directory "$BASE_DIR"/"$DIR"..."
 			if ( chmod 0070 $BASE_DIR/$DIR && \		     
 		     	     setfacl -m group::--- $BASE_DIR/$DIR && \
@@ -28,14 +27,12 @@ for DIR in $(ls $BASE_DIR); do
 			else
 				(( not_corrected++ )) 
 				echo "FAILED" 
-			fi
+			fi		
+
+		else
+			echo "NOT FOUND"
+	       		(( not_corrected++ )) 
 		fi
-
-	else
-
-		echo "NOT FOUND"
-	       	(( not_corrected++ )) 
-
 	fi
 done
 
