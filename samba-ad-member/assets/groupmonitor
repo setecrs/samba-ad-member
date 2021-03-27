@@ -4,27 +4,31 @@ BASE_DIR=$SHARED_DIRECTORY
 PREFIX=$GROUP_PREFIX
 not_corrected=0
 corrected=0
+dontneed=0
 
 #for DIR in $(ls -l $BASE_DIR | awk '{if ($4 == "root"){print $9;}}'); do
 for DIR in $(ls $BASE_DIR); do
 	echo -n "CRON: Searching group "$PREFIX$DIR"..."
 
 	if /usr/bin/getent group $PREFIX$DIR > /dev/null; then 
-		echo "OK" 
-		echo -n "CRON      Adjusting group on directory "$BASE_DIR"/"$DIR"..."
-		
-		if ( chmod 0070 $BASE_DIR/$DIR && \		     
-		     setfacl -m group::--- $BASE_DIR/$DIR && \
-		     setfacl -m default:group:$PREFIX$DIR:rwx $BASE_DIR/$DIR && \
-		     setfacl -m group:$PREFIX$DIR:rwx $BASE_DIR/$DIR && \
-		     setfacl -m other::--- $BASE_DIR/$DIR ); 	
-		then			   
-			echo "OK"
-			(( corrected++ )) 
-			/etc/cron.daily/userlinks $DIR
+		echo "OK" 		
+		if (getfacl $BASE_DIR/$DIR | grep -i $PREFIX$DIR); then
+			(( dontneed++ ))
 		else
-			(( not_corrected++ )) 
-			echo "FAILED" 
+			echo -n "CRON      Adjusting group on directory "$BASE_DIR"/"$DIR"..."
+			if ( chmod 0070 $BASE_DIR/$DIR && \		     
+		     	     setfacl -m group::--- $BASE_DIR/$DIR && \
+		     	     setfacl -m default:group:$PREFIX$DIR:rwx $BASE_DIR/$DIR && \
+		     	     setfacl -m group:$PREFIX$DIR:rwx $BASE_DIR/$DIR && \
+		     	     setfacl -m other::--- $BASE_DIR/$DIR ); 	
+			then			   
+				echo "OK"
+				(( corrected++ )) 
+				/etc/cron.daily/userlinks $DIR
+			else
+				(( not_corrected++ )) 
+				echo "FAILED" 
+			fi
 		fi
 
 	else
@@ -39,4 +43,6 @@ echo "CRON: ***************************************************************"
 echo "CRON: Directories adjusted: "$corrected
 echo "CRON: ***************************************************************"
 echo "CRON: Directories needing adjustment: "$not_corrected
+echo "CRON: ***************************************************************"
+echo "CRON: Directories already adjusted: "$dontneed
 echo "CRON: ***************************************************************"
