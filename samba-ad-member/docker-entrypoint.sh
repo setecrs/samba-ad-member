@@ -232,7 +232,7 @@ crudini --set $SAMBA_CONF homes "valid users" "%S"
 crudini --set $SAMBA_CONF homes "hide unreadable" "yes"
 crudini --set $SAMBA_CONF homes "hide dot files" "yes"
 crudini --set $SAMBA_CONF homes "inherit acls" "yes"
-crudini --set $SAMBA_CONF homes "acl allow execute always" "yes"
+#crudini --set $SAMBA_CONF homes "acl allow execute always" "yes"
 
 # private shared directory (restricted) - $SHARED_DIRECTORY ex: /tmp
 #mkdir -p "$SHARED_DIRECTORY"
