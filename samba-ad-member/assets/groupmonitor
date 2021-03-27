@@ -15,12 +15,12 @@ for DIR in $(ls $BASE_DIR); do
 		if /usr/bin/getent group $PREFIX$DIR > /dev/null; then 
 			echo "OK" 				
 			echo -n "CRON      Adjusting group on directory "$BASE_DIR"/"$DIR"..."
-			if ( chmod 0070 $BASE_DIR/$DIR && \		     
+			if ( chmod 0070 $BASE_DIR/$DIR && \
 		     	     setfacl -m group::--- $BASE_DIR/$DIR && \
 		     	     setfacl -m default:group:$PREFIX$DIR:rwx $BASE_DIR/$DIR && \
 		     	     setfacl -m group:$PREFIX$DIR:rwx $BASE_DIR/$DIR && \
-		     	     setfacl -m other::--- $BASE_DIR/$DIR ); 
-			     setfacl -m default:other::--- $BASE_DIR/$DIR
+		     	     setfacl -m other::--- $BASE_DIR/$DIR && \
+			     setfacl -m default:other::--- $BASE_DIR/$DIR );
 			then			   
 				echo "OK"
 				(( corrected++ )) 
