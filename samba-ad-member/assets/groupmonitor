@@ -12,7 +12,7 @@ for DIR in $(ls $BASE_DIR); do
 
 	if /usr/bin/getent group $PREFIX$DIR > /dev/null; then 
 		echo "OK" 		
-		if (getfacl $BASE_DIR/$DIR | grep -i $PREFIX$DIR); then
+		if (cd $BASE_DIR && getfacl $DIR | grep -i $PREFIX$DIR >/dev/null 2>&1 ); then
 			(( dontneed++ ))
 		else
 			echo -n "CRON      Adjusting group on directory "$BASE_DIR"/"$DIR"..."
