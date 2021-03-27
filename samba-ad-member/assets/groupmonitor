@@ -19,7 +19,8 @@ for DIR in $(ls $BASE_DIR); do
 		     	     setfacl -m group::--- $BASE_DIR/$DIR && \
 		     	     setfacl -m default:group:$PREFIX$DIR:rwx $BASE_DIR/$DIR && \
 		     	     setfacl -m group:$PREFIX$DIR:rwx $BASE_DIR/$DIR && \
-		     	     setfacl -m other::--- $BASE_DIR/$DIR ); 	
+		     	     setfacl -m other::--- $BASE_DIR/$DIR ); 
+			     setfacl -m default:other::--- $BASE_DIR/$DIR
 			then			   
 				echo "OK"
 				(( corrected++ )) 
