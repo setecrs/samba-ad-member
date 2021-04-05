@@ -47,7 +47,7 @@ OS_LEVEL=${OS_LEVEL:-0}
 WINS_SUPPORT=${WINS_SUPPORT:-no}
 WINS_SERVER=${WINS_SERVER:-127.0.0.1}
 DNS_PROXY=${DNS_PROXY:-no}
-LOG_LEVEL=${LOG_LEVEL:-1}
+LOG_LEVEL=${LOG_LEVEL:-2}
 DEBUG_TIMESTAMP=${DEBUG_TIMESTAMP:-yes}
 LOG_FILE=${LOG_FILE:-/var/log/samba/log.%m}
 MAX_LOG_SIZE=${MAX_LOG_SIZE:-1000}
@@ -232,7 +232,7 @@ crudini --set $SAMBA_CONF homes "valid users" "%S"
 crudini --set $SAMBA_CONF homes "hide unreadable" "yes"
 crudini --set $SAMBA_CONF homes "hide dot files" "yes"
 crudini --set $SAMBA_CONF homes "inherit acls" "yes"
-#crudini --set $SAMBA_CONF homes "acl allow execute always" "yes"
+crudini --set $SAMBA_CONF homes "acl allow execute always" "yes"
 
 # private shared directory (restricted) - $SHARED_DIRECTORY ex: /tmp
 #mkdir -p "$SHARED_DIRECTORY"
