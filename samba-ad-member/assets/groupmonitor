@@ -18,14 +18,14 @@ for DIR in $(ls $BASE_DIR); do
 			if ( chmod 0070 $BASE_DIR/$DIR && \
 			     setfacl -b $BASE_DIR/$DIR && \
 			     setfacl -m user::--- $BASE_DIR/$DIR && \
-		     	     setfacl -m group::rwx $BASE_DIR/$DIR && \		     	     
+		     	     setfacl -m group::rwx $BASE_DIR/$DIR && \
 		     	     setfacl -m group:$PREFIX$DIR:rwx $BASE_DIR/$DIR && \
-		     	     setfacl -m other::--- $BASE_DIR/$DIR && \			     
+		     	     setfacl -m other::--- $BASE_DIR/$DIR && \
 			     setfacl -m default:group:$PREFIX$DIR:rwx $BASE_DIR/$DIR && \
 			     setfacl -m default:user::rwx $BASE_DIR/$DIR && \
 			     setfacl -m default:group::rwx $BASE_DIR/$DIR && \
 			     setfacl -m default:other::r-x $BASE_DIR/$DIR );
-			then			   
+			then
 				echo "OK"
 				(( corrected++ )) 
 				/etc/cron.daily/userlinks $DIR
