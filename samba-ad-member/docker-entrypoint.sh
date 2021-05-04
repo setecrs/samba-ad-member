@@ -165,7 +165,7 @@ crudini --set $SAMBA_CONF global "max xmit" "$MAX_XMIT"
 crudini --set $SAMBA_CONF global "dead time" "$DEAD_TIME"
 
 # Point to specific kerberos server
-crudini --set $SAMBA_CONF global "password server" "$PASSWORD_SERVER"
+crudini --set $SAMBA_CONF global "password server" "*"
 
 # #crudini --set $SAMBA_CONF global "winbind separator" "$WINBIND_SEPARATOR"
 crudini --set $SAMBA_CONF global "winbind uid" "$WINBIND_UID"
@@ -259,7 +259,7 @@ if [[ ! -f ${DEDICATED_KEYTAB_FILE} ]]; then
 	#echo 'Generating Kerberos ticket'
 	#echo --------------------------------------------------
 	# echo $AD_PASSWORD | kinit -V $AD_USERNAME@$REALM
-	net ads join -U"$AD_USERNAME"%"$AD_PASSWORD" && echo "OK." || echo "Failed."	
+	net ads join -U"$AD_USERNAME"%"$AD_PASSWORD" -S $PASSWORD_SERVER --no-dns-updates && echo "OK." || echo "Failed."	
 else 
 	echo "Already registered." 
 	echo "----------------------------------------------"
