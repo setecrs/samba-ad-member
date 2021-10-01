@@ -272,8 +272,8 @@ if [[ ! -f ${DEDICATED_KEYTAB_FILE} ]]; then
 	#echo --------------------------------------------------
 	# echo $AD_PASSWORD | kinit -V $AD_USERNAME@$REALM
 	net ads join -U"$AD_USERNAME"%"$AD_PASSWORD" -S $PASSWORD_SERVER --no-dns-updates &&\
-	cp -p ${DEDICATED_KEYTAB_FILE} /var/lib/samba/krb5.keytab &&\
-	ln -s /var/lib/samba/krb5.keytab ${DEDICATED_KEYTAB_FILE} && echo "Linked." &&\
+	mv ${DEDICATED_KEYTAB_FILE} /var/lib/samba/krb5.keytab && echo -n "Keytab moved..." &&\
+	ln -s /var/lib/samba/krb5.keytab ${DEDICATED_KEYTAB_FILE} && echo -n "Keytab Linked." &&\
 	echo "OK." || echo "Failed."
 	
 else 
