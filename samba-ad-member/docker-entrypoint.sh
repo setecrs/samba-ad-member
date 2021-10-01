@@ -251,6 +251,16 @@ crudini --set $SAMBA_CONF homes "acl allow execute always" "yes"
 
 
 echo --------------------------------------------------
+echo 'Verifying Keytab file on lib DIR'
+echo --------------------------------------------------
+if [[ -f /var/lib/samba/krb5.keytab ]]; then
+	echo -n "Exists..."
+	cp /var/lib/samba/krb5.keytab ${DEDICATED_KEYTAB_FILE} && echo "Copied."
+else
+	echo "Does NOT exist."
+fi
+
+echo --------------------------------------------------
 echo 'Registering to Active Directory'
 echo --------------------------------------------------
 echo -n "Registering Windows Machine ..."
