@@ -257,7 +257,7 @@ echo 'creating it each time the pod is created)'
 echo --------------------------------------------------
 if [[ -f /var/lib/samba/krb5.keytab ]]; then
 	echo -n "Exists..."
-	cp -p /var/lib/samba/krb5.keytab ${DEDICATED_KEYTAB_FILE} && echo "Copied."
+	ln -s /var/lib/samba/krb5.keytab ${DEDICATED_KEYTAB_FILE} && echo "Linked."
 else
 	echo "Does NOT exist."
 fi
@@ -271,7 +271,10 @@ if [[ ! -f ${DEDICATED_KEYTAB_FILE} ]]; then
 	#echo 'Generating Kerberos ticket'
 	#echo --------------------------------------------------
 	# echo $AD_PASSWORD | kinit -V $AD_USERNAME@$REALM
-	net ads join -U"$AD_USERNAME"%"$AD_PASSWORD" -S $PASSWORD_SERVER --no-dns-updates && cp -p ${DEDICATED_KEYTAB_FILE} /var/lib/samba/krb5.keytab && echo "OK." || echo "Failed."
+	net ads join -U"$AD_USERNAME"%"$AD_PASSWORD" -S $PASSWORD_SERVER --no-dns-updates &&\
+	cp -p ${DEDICATED_KEYTAB_FILE} /var/lib/samba/krb5.keytab &&\
+	ln -s /var/lib/samba/krb5.keytab ${DEDICATED_KEYTAB_FILE} && echo "Linked." &&\
+	echo "OK." || echo "Failed."
 	
 else 
 	echo "Already registered." 
