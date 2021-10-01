@@ -251,7 +251,9 @@ crudini --set $SAMBA_CONF homes "acl allow execute always" "yes"
 
 
 echo --------------------------------------------------
-echo 'Verifying Keytab file on lib DIR'
+echo 'Verifying Keytab file on LIB DIR'
+echo '(you should usit as a persistent volume for not '
+echo 'creating it each time the pod is created)'
 echo --------------------------------------------------
 if [[ -f /var/lib/samba/krb5.keytab ]]; then
 	echo -n "Exists..."
