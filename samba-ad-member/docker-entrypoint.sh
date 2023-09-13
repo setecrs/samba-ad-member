@@ -139,7 +139,7 @@ crudini --set $SAMBA_CONF global "max log size" "$MAX_LOG_SIZE"
 
 # Active Directory
 crudini --set $SAMBA_CONF global "security" "$SECURITY"
-crudini --set $SAMBA_CONF global "encrypt passwords" "$ENCRYPT_PASSWORDS"
+# crudini --set $SAMBA_CONF global "encrypt passwords" "$ENCRYPT_PASSWORDS"
 crudini --set $SAMBA_CONF global "passdb backend" "tdbsam"
 crudini --set $SAMBA_CONF global "realm" "$REALM"
 
@@ -181,9 +181,9 @@ crudini --set $SAMBA_CONF global "idmap config $WORKGROUP : range" "100000-99999
 
 crudini --set $SAMBA_CONF global "template homedir" "$TEMPLATE_HOMEDIR"
 crudini --set $SAMBA_CONF global "template shell" "$TEMPLATE_SHELL"
-crudini --set $SAMBA_CONF global "client use spnego" "$CLIENT_USE_SPNEGO"
-crudini --set $SAMBA_CONF global "client ntlmv2 auth" "$CLIENT_NTLMV2_AUTH"
-crudini --set $SAMBA_CONF global "encrypt passwords" "$ENCRYPT_PASSWORDS"
+# crudini --set $SAMBA_CONF global "client use spnego" "$CLIENT_USE_SPNEGO"
+# crudini --set $SAMBA_CONF global "client ntlmv2 auth" "$CLIENT_NTLMV2_AUTH"
+# crudini --set $SAMBA_CONF global "encrypt passwords" "$ENCRYPT_PASSWORDS"
 crudini --set $SAMBA_CONF global "server signing" "$SERVER_SIGNING"
 crudini --set $SAMBA_CONF global "smb encrypt" "$SMB_ENCRYPT"
 crudini --set $SAMBA_CONF global "restrict anonymous" "$RESTRICT_ANONYMOUS"
