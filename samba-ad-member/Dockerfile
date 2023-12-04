@@ -1,4 +1,4 @@
-FROM debian:stable
+FROM debian:bullseye
 
 MAINTAINER Aristeu Jr <aristeu.jr@gmail.com>
 
