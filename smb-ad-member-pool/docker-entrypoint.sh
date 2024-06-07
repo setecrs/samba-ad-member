@@ -287,6 +287,7 @@ echo "Starting winbindd..."
 echo "----------------------------------------------"
 service winbind start 
 sleep 5
+
 echo "----------------------------------------------"
 echo "Verifying Status"
 echo "----------------------------------------------"
