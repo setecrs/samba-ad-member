@@ -164,6 +164,7 @@ crudini --set $SAMBA_CONF global "level2 oplocks" "$LEVEL2_OPLOCKS"
 crudini --set $SAMBA_CONF global "kernel oplocks" "$KERNEL_OPLOCKS"
 crudini --set $SAMBA_CONF global "max xmit" "$MAX_XMIT"
 crudini --set $SAMBA_CONF global "dead time" "$DEAD_TIME"
+crudini --set $SAMBA_CONF global "max open files" "$MAX_OPEN_FILES"
 
 # Point to specific kerberos server
 crudini --set $SAMBA_CONF global "password server" "*"
