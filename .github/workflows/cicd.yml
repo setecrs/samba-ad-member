@@ -1,32 +1,41 @@
 
-name: CI/CD
+name: samba-ad-member
 
 on: [push]
 
+env:
+  REPO: setecrs/samba-ad-member
+  FOLDER: samba-ad-member
+  TAG: ${GITHUB_REF#refs/tags/}
+  VERSION: ${GITHUB_REF#refs/tags/samba-ad-member_}
+
 jobs:
-  build:    
+  build:
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/') # || github.ref == 'refs/heads/master'
+    if: startsWith(github.ref, 'refs/tags/samba-ad-member_') || contains(github.event.head_commit.message, '.yml')
     steps:
-    - uses: actions/checkout@v2
-      
-    - name: Docker Login      
-      run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_TOKEN }} || echo could not login
-      
+    - uses: actions/checkout@v3
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_TOKEN }}
+
     - name: pull latest (for cache)
-      run: docker pull setecrs/samba-ad-member || echo could not pull  
-      
+      run: docker pull ${{env.REPO}}:latest || echo could not pull
+
     - name: Docker build latest
-      working-directory: samba-ad-member
-      run: docker build --cache-from setecrs/samba-ad-member:latest . -t setecrs/samba-ad-member:latest
-      
-    - name: Docker push latest (if master)
-      if: github.ref == 'refs/heads/master'
-      run: docker push setecrs/samba-ad-member:latest   
-      
+      run: docker build --cache-from ${{env.REPO}}:latest ${{env.FOLDER}} -t ${{env.REPO}}:latest
+
+
+
+    - name: Docker push latest
+      run: docker push ${{env.REPO}}:latest
+
     - name: Docker push - semver
-      if: startsWith(github.ref, 'refs/tags/')
+      if: startsWith(github.ref, 'refs/tags/samba-ad-member_')
       run: |
-        docker tag setecrs/samba-ad-member:latest setecrs/samba-ad-member:${GITHUB_REF#refs/tags/}         
-        docker push setecrs/samba-ad-member:${GITHUB_REF#refs/tags/}
+        docker tag ${{env.REPO}}:latest ${{env.REPO}}:${{env.VERSION}}
+        docker push ${{env.REPO}}:${{env.VERSION}}
         
