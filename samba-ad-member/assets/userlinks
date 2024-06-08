@@ -5,8 +5,8 @@ PREFIX=$GROUP_PREFIX
 
 if [ -z $1 ]; then
 
-	for DIR in $(ls -l $BASE_DIR | awk '{if ($4 != "root"){print $9;}}'); do
-		echo -n "CRON: Searching group "$PREFIX$DIR"..." 
+	for DIR in $(ls -ln $BASE_DIR | awk '{if ($4 > 100000){print $9;}}'); do
+		echo -n "CRON: Searching group "$PREFIX$DIR"..."
 		/usr/bin/getent group $PREFIX$DIR > /dev/null && echo "OK" && \
 		for USER in $(/usr/bin/getent group $PREFIX$DIR | awk '{split($1,users,":"); split(users[4],user,","); for (i=1;i in user;i++) {print user[i];}}'); do
 			echo -n "CRON      Adjusting "$USER" link to "$BASE_DIR"/"$DIR"..." && \
@@ -15,7 +15,7 @@ if [ -z $1 ]; then
 		done || echo "NOT FOUND"
 	done
 else
-	DIR=$1 
+	DIR=$1
 	/usr/bin/getent group $PREFIX$DIR > /dev/null && \
 	for USER in $(/usr/bin/getent group $PREFIX$DIR | awk '{split($1,users,":"); split(users[4],user,","); for (i=1;i in user;i++) {print user[i];}}'); do
 		echo -n "CRON      Adjusting "$USER" link to "$BASE_DIR"/"$DIR"..." && \
