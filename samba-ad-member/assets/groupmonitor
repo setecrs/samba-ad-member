@@ -6,7 +6,7 @@ not_corrected=0
 corrected=0
 total=$(ls $BASE_DIR | wc -l)
 
-for DIR in $(ls -ln | awk '{if (($4 != "" )&&($4 < 100000)) {print $9}}'); do
+for DIR in $(ls -ln $BASE_DIR | awk '{if (($4 != "" )&&($4 < 100000)) {print $9}}'); do
 	echo -n "CRON: Directory "$DIR" not setted. Checking group "$PREFIX$DIR" existence..."
 	if /usr/bin/getent group $PREFIX$DIR > /dev/null; then
 		echo "OK"
