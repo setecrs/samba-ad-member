@@ -312,6 +312,7 @@ echo 'Stopping Samba to enable handling by supervisord'
 echo --------------------------------------------------
 service nmbd stop
 service smbd stop
+service winbind stop
 
 
 exec "$@"
