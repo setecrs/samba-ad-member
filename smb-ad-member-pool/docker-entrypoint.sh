@@ -61,6 +61,7 @@ LEVEL2_OPLOCKS=${LEVEL2_OPLOCKS:-no}
 KERNEL_OPLOCKS=${KERNEL_OPLOCKS:-yes}
 MAX_XMIT=${MAX_XMIT:-65535}
 MAX_OPEN_FILES=${MAX_OPEN_FILES:-32000}
+RPC_START_ONDEMAND_HELPERS=${RPC_START_ONDEMAND_HELPERS:-no}
 DEAD_TIME=${DEAD_TIME:-0}
 SHARED_DIRECTORY=${SHARED_DIRECTORY:-/usr/share/public}
 SHARE_NAME=${SHARE_NAME:-public}
@@ -143,6 +144,8 @@ crudini --set $SAMBA_CONF global "security" "$SECURITY"
 # crudini --set $SAMBA_CONF global "encrypt passwords" "$ENCRYPT_PASSWORDS"
 crudini --set $SAMBA_CONF global "passdb backend" "tdbsam"
 crudini --set $SAMBA_CONF global "realm" "$REALM"
+
+crudini --set $SAMBA_CONF global "rpc start on demand helpers" "$RPC_START_ONDEMAND_HELPERS"
 
 # Disable Printers.
 crudini --set $SAMBA_CONF global "load printers" "no"
