@@ -4,7 +4,7 @@ on: [push]
 
 env:
   REPO: setecrs/samba-ad-member-pool
-  FOLDER: smb-ad-member-pool
+  FOLDER: samba-ad-member-pool
   TAG: ${GITHUB_REF#refs/tags/}
   VERSION: ${GITHUB_REF#refs/tags/samba-ad-member-pool_}
 

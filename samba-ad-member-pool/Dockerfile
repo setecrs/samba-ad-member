@@ -1,11 +1,9 @@
 FROM debian:bookworm
 
-MAINTAINER Aristeu Jr <aristeu.jr@gmail.com>
-
 ENV TZ=Brazil/East
 ENV DEBIAN_FRONTEND=noninteractive
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
-        
+
 RUN apt-get -y update && apt-get dist-upgrade -y && \
     apt-get -yqq --no-install-recommends install \
         crudini \

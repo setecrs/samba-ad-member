@@ -60,6 +60,8 @@ OPLOCKS=${OPLOCKS:-no}
 LEVEL2_OPLOCKS=${LEVEL2_OPLOCKS:-no}
 KERNEL_OPLOCKS=${KERNEL_OPLOCKS:-yes}
 MAX_XMIT=${MAX_XMIT:-65535}
+MAX_OPEN_FILES=${MAX_OPEN_FILES:-32000}
+RPC_START_ONDEMAND_HELPERS=${RPC_START_ONDEMAND_HELPERS:-no}
 DEAD_TIME=${DEAD_TIME:-0}
 SHARED_DIRECTORY=${SHARED_DIRECTORY:-/usr/share/public}
 SHARE_NAME=${SHARE_NAME:-public}
@@ -77,16 +79,16 @@ echo "Setting up Kerberos realm: \"${DOMAIN_NAME^^}\""
 echo --------------------------------------------------
 cat > /etc/krb5.conf << EOL
 #[logging]
-#    default = FILE:/var/log/krb5.log 
-#    kdc = FILE:/var/log/kdc.log 
+#    default = FILE:/var/log/krb5.log
+#    kdc = FILE:/var/log/kdc.log
 #    admin_server = FILE:/var/log/kadmind.log
 
 [libdefaults]
     default_realm = ${DOMAIN_NAME^^}
     dns_lookup_realm = false
     dns_lookup_kdc = false
-   
-    
+
+
 EOL
 
 echo --------------------------------------------------
@@ -143,6 +145,8 @@ crudini --set $SAMBA_CONF global "security" "$SECURITY"
 crudini --set $SAMBA_CONF global "passdb backend" "tdbsam"
 crudini --set $SAMBA_CONF global "realm" "$REALM"
 
+crudini --set $SAMBA_CONF global "rpc start on demand helpers" "$RPC_START_ONDEMAND_HELPERS"
+
 # Disable Printers.
 crudini --set $SAMBA_CONF global "load printers" "no"
 crudini --set $SAMBA_CONF global "printing" "bsd"
@@ -163,6 +167,7 @@ crudini --set $SAMBA_CONF global "level2 oplocks" "$LEVEL2_OPLOCKS"
 crudini --set $SAMBA_CONF global "kernel oplocks" "$KERNEL_OPLOCKS"
 crudini --set $SAMBA_CONF global "max xmit" "$MAX_XMIT"
 crudini --set $SAMBA_CONF global "dead time" "$DEAD_TIME"
+crudini --set $SAMBA_CONF global "max open files" "$MAX_OPEN_FILES"
 
 # Point to specific kerberos server
 crudini --set $SAMBA_CONF global "password server" "*"
@@ -275,12 +280,14 @@ if [[ ! -f ${DEDICATED_KEYTAB_FILE} ]]; then
 	mv ${DEDICATED_KEYTAB_FILE} /var/lib/samba/krb5.keytab && echo -n "Keytab moved..." &&\
 	ln -s /var/lib/samba/krb5.keytab ${DEDICATED_KEYTAB_FILE} && echo -n "Keytab Linked." &&\
 	echo "OK." || echo "Failed."
-	
-else 
-	echo "Already registered." 
+
+else
+	echo "Already registered."
 	echo "----------------------------------------------"
 	echo "Verificando Status"
 	echo "----------------------------------------------"
+	service winbind start
+	sleep 5
 	wbinfo --online-status
 fi
 
@@ -302,9 +309,9 @@ sed -i 1i"$(printenv | grep -E "^GROUP_PREFIX")" /etc/crontab
 echo --------------------------------------------------
 echo 'Stopping Samba to enable handling by supervisord'
 echo --------------------------------------------------
-/etc/init.d/winbind stop
-/etc/init.d/nmbd stop
-/etc/init.d/smbd stop
+service winbind stop
+service nmbd stop
+service smbd stop
 
 
 exec "$@"
